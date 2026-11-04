@@ -1,21 +1,24 @@
-ZOÉ ET PICO — SITE v14
-======================
+ZOÉ ET PICO — SITE
+==================
 
-METTRE EN LIGNE SUR NETLIFY
-1. Ouvrez app.netlify.com, puis votre site zoeetpico.fr.
-2. Onglet « Deploys » : glissez-déposez CE DOSSIER (celui qui contient index.html) dans la zone prévue.
-3. Netlify publie le site. Pour revenir en arrière : « Deploys », choisissez l'ancienne version, puis « Publish deploy ».
+MISE EN LIGNE
+- Le site est relié à ce dépôt GitHub : tout ce qui arrive sur la branche « main » est publié
+  automatiquement sur zoeetpico.fr par Netlify.
+- Chaque modification est d'abord proposée dans une « pull request » : Netlify fabrique alors un lien
+  d'aperçu (deploy-preview-…--zoeetpico.netlify.app) pour la vérifier avant la mise en ligne.
+- Revenir en arrière : sur app.netlify.com › Deploys, choisir l'ancienne version puis « Publish deploy ».
 
 MODIFIER LE SITE
 - Les pages sont de simples fichiers HTML : index.html (accueil), jeux/, videos/, livres/, jeu/ (Les lumières de Pico),
   mentions-legales/, confidentialite/, 404.html.
 - Ajouter une vidéo : ouvrez videos/index.html et suivez le commentaire « POUR AJOUTER UNE VIDÉO ».
-  Faites de même dans index.html (section « videos ») si vous voulez l'afficher aussi sur l'accueil.
+  Faites de même dans index.html (section « videos ») pour l'afficher aussi sur l'accueil.
 - Le style est dans assets/css/site.css, les jeux dans assets/js/jeux.js.
-- Après une modification de site.css ou d'un fichier .js, changez « ?v=14 » en « ?v=15 » dans les pages
-  pour que les visiteurs reçoivent la nouvelle version.
+- Après une modification de site.css ou d'un fichier .js, augmentez le numéro « ?v=15 » (par exemple « ?v=16 »)
+  dans toutes les pages, pour que les visiteurs reçoivent la nouvelle version.
 
 FICHIERS TECHNIQUES
 - _headers : sécurité et cache (lu automatiquement par Netlify).
+- netlify.toml : indique à Netlify qu'il n'y a rien à compiler.
 - robots.txt et sitemap.xml : pour Google.
 - site.webmanifest : permet d'ajouter le site sur l'écran d'accueil d'un téléphone ou d'une tablette.
