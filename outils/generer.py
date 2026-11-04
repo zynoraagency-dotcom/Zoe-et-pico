@@ -1,8 +1,6 @@
 # Génère les pages HTML statiques du site Zoé et Pico avec un en-tête et un pied de page communs.
-# Utilisation (depuis la racine du site) : python3 outils/dessins.py . && python3 outils/generer.py .
+# Utilisation (depuis la racine du site) : python3 outils/images_coloriages.py . && python3 outils/generer.py . && node outils/apercus.js .
 import sys, json, os
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dessins import DESSINS as DESSINS_SVG
 SORTIE = sys.argv[1]
 V = "16"
 SITE = "https://zoeetpico.fr"
@@ -175,7 +173,7 @@ CARTES_JEUX = """
             <circle cx="73" cy="64" r="15" fill="#fff" stroke="#3b2a1a" stroke-width="3"/><circle cx="47" cy="64" r="15" fill="#fff" stroke="#3b2a1a" stroke-width="3"/>
             <circle cx="40" cy="42" r="15" fill="#ff6fb5" stroke="#3b2a1a" stroke-width="3"/><circle cx="60" cy="47" r="13" fill="#ffd000" stroke="#3b2a1a" stroke-width="3"/>
           </svg></div></div>
-          <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Coloriage</h3><p>6 dessins à colorier, dont le sapin de Noël et le bonhomme de neige.</p>{a_coloriage}<span class="jouer">Colorier ▶</span></div>
+          <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Coloriage</h3><p>Colorie Zoé et Pico à Noël, dans la neige, à la plage et au jardin.</p>{a_coloriage}<span class="jouer">Colorier ▶</span></div>
         </a>"""
 APPRENDS = {
     "a_lum": "Compter jusqu'à 10, associer une quantité à un nombre",
@@ -243,25 +241,35 @@ ORGA = {"@context": "https://schema.org", "@graph": [
     {"@type": "Organization", "@id": SITE + "/#marque", "name": "Zoé et Pico", "url": SITE + "/", "logo": SITE + "/img/icone-512.png", "sameAs": [YT]}]}
 
 COLORIAGES = [
-    dict(slug="sapin", nom="le sapin de Noël", titre="Le sapin de Noël", court="Sapin, étoile, boules et cadeaux",
-         desc="Un sapin de Noël décoré de boules et d'étoiles, avec une étoile souriante au sommet et deux cadeaux au pied : le coloriage idéal pour attendre Noël."),
-    dict(slug="bonhomme-de-neige", nom="le bonhomme de neige", titre="Le bonhomme de neige", court="Bonnet, écharpe, flocons et cœurs",
-         desc="Un bonhomme de neige tout sourire avec son bonnet à pompon, son écharpe et son nez en carotte, sous les flocons : un coloriage d'hiver pour les 3-6 ans."),
-    dict(slug="jardin", nom="le jardin ensoleillé", titre="Le jardin ensoleillé", court="Soleil, nuage, maison, fleur et champignon",
-         desc="Le soleil et le nuage sourient au-dessus de la maison, de la grande fleur et du champignon : un coloriage plein de détails pour les 3-6 ans."),
-    dict(slug="papillon", nom="le papillon", titre="Le papillon", court="Grandes ailes, cœurs, fleurs et étoiles",
-         desc="Un joli papillon aux grandes ailes, avec des cœurs, des fleurs et des étoiles : parfait pour essayer plein de couleurs."),
-    dict(slug="arc-en-ciel", nom="l'arc-en-ciel", titre="L'arc-en-ciel", court="Arc-en-ciel, nuages, soleil et cœurs",
-         desc="Un arc-en-ciel entre deux nuages souriants, avec le soleil et des cœurs : idéal pour apprendre et nommer les couleurs."),
-    dict(slug="poisson", nom="le poisson", titre="Le poisson", court="Poisson, bulles, algues et étoile de mer",
-         desc="Un poisson rigolo sous la mer, avec des bulles, des algues, un coquillage et une étoile de mer."),
+    dict(slug="zoe-et-pico-noel", image=True, nom="Zoé et Pico décorent le sapin", titre="Zoé et Pico décorent le sapin", court="Sapin, boules, étoile et cadeaux",
+         phrase="Colorie Zoé et Pico qui décorent le sapin&nbsp;!",
+         desc="Zoé accroche une boule au sapin pendant que Pico apporte une étoile : un coloriage de Noël avec les cadeaux, les cœurs et un nuage souriant."),
+    dict(slug="zoe-et-pico-bonhomme-de-neige", image=True, nom="Zoé et Pico font un bonhomme de neige", titre="Le bonhomme de neige de Zoé et Pico", court="Bonnet, écharpe, flocons et soleil",
+         phrase="Colorie Zoé, Pico et leur bonhomme de neige&nbsp;!",
+         desc="Zoé et Pico construisent un bonhomme de neige avec son bonnet à pompon et son écharpe, sous les flocons et le soleil d'hiver."),
+    dict(slug="zoe-et-pico-plage", image=True, nom="Zoé et Pico à la plage", titre="Zoé et Pico à la plage", court="Château de sable, palmier, ballon",
+         phrase="Colorie Zoé et Pico à la plage&nbsp;!",
+         desc="Zoé et Pico construisent un château de sable, avec le palmier, le ballon, le coquillage et l'étoile de mer : un coloriage d'été plein de soleil."),
+    dict(slug="zoe-et-pico-jardin", image=True, nom="Zoé arrose les fleurs avec Pico", titre="Zoé arrose les fleurs", court="Arrosoir, fleurs, soleil et cœurs",
+         phrase="Colorie Zoé et Pico au jardin&nbsp;!",
+         desc="Zoé arrose les fleurs du jardin avec son arrosoir, et Pico la petite luciole vole à ses côtés sous le soleil."),
+    dict(slug="zoe-et-pico-lecture", image=True, nom="Zoé et Pico lisent une histoire", titre="Zoé et Pico lisent une histoire", court="Un livre, des nuages et des étoiles",
+         phrase="Colorie Zoé et Pico qui lisent une histoire&nbsp;!",
+         desc="Zoé et Pico, assis dans l'herbe, lisent un livre ensemble sous un soleil souriant, entourés de nuages, de cœurs et d'étoiles."),
 ]
+def img_vignette(c):
+    return (f"/coloriages/zoe-et-pico/{c['slug']}-vignette.webp", 400, 565) if c.get("image") else (f"/coloriages/svg/{c['slug']}.svg", 400, 400)
+def img_feuille(c):
+    return (f"/coloriages/zoe-et-pico/{c['slug']}-impression.png", 2110, 2982) if c.get("image") else (f"/coloriages/svg/{c['slug']}.svg", 400, 400)
+def img_partage(c):
+    return (f"/coloriages/zoe-et-pico/{c['slug']}.png", 800, 1131) if c.get("image") else (f"/coloriages/img/{c['slug']}.png", 800, 800)
+
 def vignette_coloriage(c, details=False):
     btns = (f'<div class="btns-mini"><a class="btn btn-miel btn-petit" href="/coloriages/{c["slug"]}/">🖨️ Imprimer</a>'
-            f'<a class="btn btn-blanc btn-petit" href="/coloriages/pdf/coloriage-{c["slug"]}-zoe-et-pico.pdf" download>📄 PDF</a>'
+            f'<a class="btn btn-blanc btn-petit" href="/coloriages/pdf/coloriage-{c["slug"]}.pdf" download>📄 PDF</a>'
             f'<a class="btn btn-blanc btn-petit" href="/jeux/coloriage/#jeu-coloriage-{c["slug"]}" data-jeu="coloriage" data-dessin="{c["slug"]}">🎨 En ligne</a></div>') if details else ""
     return f"""<article class="coloriage-carte rev">
-          <a class="coloriage-image" href="/coloriages/{c['slug']}/"><img src="/coloriages/svg/{c['slug']}.svg" alt="Coloriage {c['nom']} à imprimer" width="400" height="400" loading="lazy"></a>
+          <a class="coloriage-image" href="/coloriages/{c['slug']}/"><img src="{img_vignette(c)[0]}" alt="Coloriage {c['nom']} à imprimer" width="{img_vignette(c)[1]}" height="{img_vignette(c)[2]}" loading="lazy"></a>
           <h3>{c['titre']}</h3>
           <p>{c['court']}</p>{btns}
         </article>"""
@@ -630,8 +638,8 @@ JEUX_PAGES = [
          comment=["Regarde les lumières qui volent", "Touche une lumière pour l'attraper", "Pico compte avec toi à chaque lumière", "Attrape 10 lumières pour gagner !"],
          conseil="Un jeu parfait pour les plus petits qui découvrent l'écran tactile : il suffit de toucher, sans rien lire."),
     dict(slug="coloriage", h1="Le coloriage en ligne", titre="Coloriage en ligne gratuit pour enfants (3-6 ans) – Zoé et Pico",
-         desc="Coloriage en ligne gratuit pour les 3-6 ans : choisis une couleur et colorie le sapin de Noël, le bonhomme de neige, le jardin, le papillon, l'arc-en-ciel ou le poisson. Aussi à imprimer.",
-         intro="Six dessins à colorier sur l'écran : le sapin de Noël, le bonhomme de neige, le jardin ensoleillé, le papillon, l'arc-en-ciel et le poisson. Pico dit le nom de chaque couleur choisie.",
+         desc="Coloriage en ligne gratuit pour les 3-6 ans : colorie Zoé et Pico à Noël, dans la neige, à la plage, au jardin ou en lisant une histoire. Les coloriages sont aussi à imprimer.",
+         intro="Cinq coloriages de Zoé et Pico à colorier sur l'écran : Noël, le bonhomme de neige, la plage, le jardin et l'heure de l'histoire. Touche une zone, elle se remplit de la couleur choisie, et Pico dit le nom de chaque couleur.",
          age="3-6 ans", ico="🖍️", g="#fff6c2",
          apprend=["Nommer 15 couleurs", "Créativité et choix des couleurs", "Précision du geste"],
          comment=["Choisis un pot de peinture", "Touche une partie du dessin pour la colorier", "Le bouton ↩️ annule la dernière couleur", "Touche « J'ai fini ! » ou imprime ton dessin 🖨️"],
@@ -691,11 +699,11 @@ PROMO_CAHIERS_COLORIAGE = f"""<div class="livre-detail rev" style="margin-top:10
         </div>
       </div>"""
 coll_ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Coloriages à imprimer de Zoé et Pico", "url": SITE + "/coloriages/", "inLanguage": "fr",
-           "isAccessibleForFree": True, "hasPart": [{"@type": "ImageObject", "name": f"Coloriage {c['nom']}", "contentUrl": f"{SITE}/coloriages/img/{c['slug']}.png",
+           "isAccessibleForFree": True, "hasPart": [{"@type": "ImageObject", "name": f"Coloriage {c['nom']}", "contentUrl": SITE + img_partage(c)[0],
            "url": f"{SITE}/coloriages/{c['slug']}/"} for c in COLORIAGES]}
 hub = tete("Coloriages à imprimer gratuits pour enfants (3-6 ans) – Zoé et Pico",
-    "Coloriages gratuits à imprimer pour les enfants de 3 à 6 ans : sapin de Noël, bonhomme de neige, jardin, papillon, arc-en-ciel, poisson. Format A4 et PDF, ou à colorier en ligne.",
-    "/coloriages/", ld(coll_ld), image=(f"{SITE}/coloriages/img/sapin.png", 800, 800, "Coloriage du sapin de Noël de Zoé et Pico"),
+    "Coloriages gratuits à imprimer pour les 3-6 ans : Zoé et Pico à Noël, avec le bonhomme de neige, à la plage, au jardin et en lisant une histoire. Format A4 et PDF, ou à colorier en ligne.",
+    "/coloriages/", ld(coll_ld), image=(SITE + img_partage(COLORIAGES[0])[0], 800, 1131, "Coloriage de Zoé et Pico qui décorent le sapin de Noël"),
     fil=[A, ("Coloriages", "/coloriages/")]) + nav("coloriages") + f"""
 <main id="contenu">
   <div class="page-tete">
@@ -731,12 +739,12 @@ ecrire("coloriages/index.html", hub)
 def page_coloriage(c):
     autres = "".join(vignette_coloriage(x) for x in COLORIAGES if x is not c)
     img_ld = {"@context": "https://schema.org", "@type": "ImageObject", "name": f"Coloriage {c['nom']} à imprimer", "description": c["desc"],
-              "contentUrl": f"{SITE}/coloriages/img/{c['slug']}.png", "thumbnailUrl": f"{SITE}/coloriages/svg/{c['slug']}.svg",
+              "contentUrl": SITE + img_partage(c)[0], "thumbnailUrl": SITE + img_vignette(c)[0],
               "creator": {"@type": "Organization", "name": "Zoé et Pico", "url": SITE + "/"}, "creditText": "Zoé et Pico",
               "copyrightNotice": "© Zoé et Pico", "license": SITE + "/coloriages/#conditions", "acquireLicensePage": SITE + "/coloriages/#conditions"}
     html = tete(f"Coloriage {c['nom']} à imprimer gratuit – Zoé et Pico",
         f"Coloriage gratuit à imprimer : {c['nom']}. {c['desc']} Format A4 ou PDF, ou à colorier en ligne.",
-        f"/coloriages/{c['slug']}/", ld(img_ld), image=(f"{SITE}/coloriages/img/{c['slug']}.png", 800, 800, f"Coloriage {c['nom']} de Zoé et Pico"),
+        f"/coloriages/{c['slug']}/", ld(img_ld), image=(SITE + img_partage(c)[0], img_partage(c)[1], img_partage(c)[2], f"Coloriage {c['nom']}"),
         fil=[A, ("Coloriages", "/coloriages/"), (c["titre"], f"/coloriages/{c['slug']}/")]) + nav("coloriages") + f"""
 <main id="contenu">
   <div class="page-tete ne-pas-imprimer">
@@ -747,7 +755,7 @@ def page_coloriage(c):
         <p>{c['desc']}</p>
         <div class="btns">
           <button class="btn btn-miel" type="button" data-imprimer="#feuille">🖨️ Imprimer</button>
-          <a class="btn btn-blanc" href="/coloriages/pdf/coloriage-{c['slug']}-zoe-et-pico.pdf" download>📄 PDF</a>
+          <a class="btn btn-blanc" href="/coloriages/pdf/coloriage-{c['slug']}.pdf" download>📄 PDF</a>
           <a class="btn btn-blanc" href="/jeux/coloriage/#jeu-coloriage-{c['slug']}" data-jeu="coloriage" data-dessin="{c['slug']}">🎨 Colorier en ligne</a>
         </div>
       </div>
@@ -758,11 +766,11 @@ def page_coloriage(c):
       <div class="feuille" id="feuille">
         <div class="feuille-entete">
           <img src="/img/zoe.webp" alt="" width="324" height="690">
-          <p class="feuille-titre">Colorie {c['nom']} avec Zoé et Pico&nbsp;!</p>
+          <p class="feuille-titre">{c.get('phrase') or f"Colorie {c['nom']} avec Zoé et Pico&nbsp;!"}</p>
           <img src="/img/pico-petit.webp" alt="" width="160" height="208">
         </div>
         <p class="feuille-prenom">Mon prénom&nbsp;: ............................................</p>
-        <img class="feuille-dessin" src="/coloriages/svg/{c['slug']}.svg" alt="Coloriage {c['nom']} à imprimer, avec de gros contours pour les 3-6 ans" width="400" height="400">
+        <img class="feuille-dessin" src="{img_feuille(c)[0]}" alt="Coloriage {c['nom']} à imprimer, avec de gros contours pour les 3-6 ans" width="{img_feuille(c)[1]}" height="{img_feuille(c)[2]}">
         <p class="feuille-pied">zoeetpico.fr · d'autres coloriages, des jeux gratuits et les cahiers d'activités de Zoé et Pico</p>
       </div>
     </div>

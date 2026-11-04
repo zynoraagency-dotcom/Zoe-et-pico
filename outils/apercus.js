@@ -3,7 +3,11 @@
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
 const RACINE = path.resolve(process.argv[2] || '.');
-const SLUGS = ['sapin', 'bonhomme-de-neige', 'jardin', 'papillon', 'arc-en-ciel', 'poisson'];
+// tous les coloriages qui ont une page (/coloriages/<slug>/) ; aperçus PNG pour les dessins vectoriels
+const SLUGS = fs.readdirSync(path.join(RACINE, 'coloriages'), { withFileTypes: true })
+  .filter(d => d.isDirectory() && fs.existsSync(path.join(RACINE, 'coloriages', d.name, 'index.html'))).map(d => d.name)
+  .sort((a, b) => (b.startsWith('zoe-et-pico') - a.startsWith('zoe-et-pico')) || a.localeCompare(b));
+const SVG = SLUGS.filter(s => fs.existsSync(path.join(RACINE, `coloriages/svg/${s}.svg`)));
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.json': 'application/json' };
 
 const serveur = http.createServer((req, res) => {
@@ -23,7 +27,7 @@ const serveur = http.createServer((req, res) => {
 
   // aperçus PNG 800 x 800 (fond blanc)
   const p = await b.newPage({ viewport: { width: 800, height: 800 } });
-  for (const s of SLUGS) {
+  for (const s of SVG) {
     await p.setContent(`<body style="margin:0;background:#fff"><img src="${B}/coloriages/svg/${s}.svg" style="width:800px;height:800px;display:block"></body>`);
     await p.waitForFunction(() => document.images[0].complete);
     await p.screenshot({ path: path.join(RACINE, `coloriages/img/${s}.png`) });
@@ -48,7 +52,7 @@ const serveur = http.createServer((req, res) => {
   const pdf = await b.newPage();
   for (const s of SLUGS) {
     await pdf.goto(`${B}/coloriages/${s}/`); await prepare(pdf, [s]);
-    await pdf.pdf({ path: path.join(RACINE, `coloriages/pdf/coloriage-${s}-zoe-et-pico.pdf`), format: 'A4', printBackground: true, preferCSSPageSize: true });
+    await pdf.pdf({ path: path.join(RACINE, `coloriages/pdf/coloriage-${s}.pdf`), format: 'A4', printBackground: true, preferCSSPageSize: true });
     await pdf.evaluate(() => { document.getElementById('impression').remove(); document.body.classList.remove('imprime'); });
     await pdf.emulateMedia({ media: 'screen' });
   }

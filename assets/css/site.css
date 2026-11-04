@@ -336,7 +336,7 @@ section{padding:46px 0 60px;scroll-margin-top:90px}
 
 /* ---------- salle de jeu (fenêtre plein écran) ---------- */
 dialog{border:0;padding:0;color:inherit}
-.salle{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;flex-direction:column;overflow:hidden;
+.salle{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;flex-direction:column;overflow:hidden;overflow:clip;
   background:linear-gradient(180deg,#bfe8ff 0%,#e7f7ff 45%,var(--prairie) 100%)}
 .salle[open]{display:flex;animation:entre .3s ease-out}
 .salle::backdrop{background:var(--prairie)}
@@ -399,6 +399,11 @@ dialog{border:0;padding:0;color:inherit}
 .dessin [data-z]{cursor:pointer;transition:fill .3s ease}
 .dessin [data-z]:hover{filter:brightness(.97)}
 .dessin [data-z]:focus-visible{outline:none;stroke:var(--rose);stroke-width:9}
+.dessin.raster{padding:0;overflow:hidden;width:min(400px,88vw,calc(58dvh * .7076));aspect-ratio:1055/1491}
+.dessin.raster canvas,.dessin.raster .traits{position:absolute;inset:0;width:100%;height:100%;display:block}
+.dessin.raster canvas{cursor:pointer;touch-action:manipulation}
+.dessin.raster .traits{mix-blend-mode:multiply;pointer-events:none;user-select:none;-webkit-user-select:none}
+.vignettes-dessins button img[width="64"][height="90"]{object-fit:contain}
 .erreur-chargement{display:grid;place-items:center;height:100%;text-align:center;padding:20px;color:var(--doux)}
 .outils{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:440px;background:rgba(255,253,246,.85);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:2px solid #fff;border-radius:28px;padding:16px 16px 18px;box-shadow:0 8px 24px rgba(59,42,26,.12)}
@@ -418,11 +423,30 @@ dialog{border:0;padding:0;color:inherit}
 .vignettes-dessins button{width:64px;height:64px;border-radius:16px;background:#fff;padding:4px;box-shadow:0 4px 0 rgba(59,42,26,.15);transition:transform .15s}
 .vignettes-dessins button img{width:100%;height:100%}
 .vignettes-dessins button[aria-pressed="true"]{box-shadow:0 0 0 4px var(--miel),0 4px 0 rgba(59,42,26,.15);transform:translateY(-2px)}
+@media (min-width:700px){
+  .atelier{flex-wrap:nowrap;justify-content:center;justify-content:safe center}
+  .outils{max-width:340px;flex:0 1 340px}
+  .vignettes-dessins{gap:8px}.vignettes-dessins button{width:54px;height:54px}
+  .dessin{flex:0 1 auto;min-width:0}
+}
 @media (max-width:600px){
   .plateau:has(.atelier) .consigne-zone{margin-bottom:10px}
   .plateau:has(.atelier) .consigne{font-size:1.1rem}
   .plateau:has(.atelier) .consigne-zone img{width:48px}
   .dessin{width:min(480px,88vw,42dvh);padding:5px;border-radius:24px}
+  /* téléphone : tout tient dans l'écran, sans défiler entre la palette et le dessin */
+  .plateau:has(.atelier){justify-content:flex-start;padding-top:0}
+  .plateau:has(.atelier) .consigne-zone{display:none}
+  .dessin.raster{width:min(86vw,calc((100dvh - 330px) * .7076));padding:0;border-radius:20px}
+  .atelier{gap:10px}
+  .outils{width:100%;max-width:none;padding:8px 8px 10px;gap:8px;border-radius:22px}
+  .couleur-choisie{display:none}
+  .palette{display:flex;flex-wrap:nowrap;overflow-x:auto;gap:9px;width:100%;padding:6px 8px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .palette::-webkit-scrollbar{display:none}
+  .palette button{flex:0 0 40px;width:40px;height:40px}
+  .vignettes-dessins{flex-wrap:nowrap;overflow-x:auto;justify-content:flex-start;width:100%;padding:4px 4px 6px;scrollbar-width:none}
+  .vignettes-dessins button{flex:0 0 46px;width:46px;height:46px;border-radius:12px}
+  .actions-coloriage .btn{min-height:44px;padding:8px 16px}
   .atelier{gap:12px}
   .outils{padding:12px;gap:10px;border-radius:24px}
   .palette{grid-template-columns:repeat(8,1fr);gap:7px}.palette button{width:36px;height:36px}
@@ -472,7 +496,7 @@ dialog{border:0;padding:0;color:inherit}
 .coloriage-carte{display:flex;flex-direction:column;gap:6px;background:var(--carte);border-radius:var(--rayon);padding:14px 14px 18px;box-shadow:0 8px 0 rgba(59,42,26,.1),0 16px 26px rgba(59,42,26,.08);text-align:center;transition:transform .3s cubic-bezier(.2,.9,.3,1.4)}
 .coloriage-carte:hover{transform:translateY(-5px) rotate(-.6deg)}
 .coloriage-image{display:block;border-radius:20px;background:#fff;padding:6px;box-shadow:inset 0 0 0 2px #f1e6cf}
-.coloriage-image img{width:100%;height:auto;aspect-ratio:1}
+.coloriage-image img{width:100%;height:auto;aspect-ratio:1055/1491;object-fit:contain}
 .coloriage-carte h3{font-size:1.3rem;margin-top:6px}
 .coloriage-carte h3 a{text-decoration:none}
 .coloriage-carte p{color:var(--doux);font-size:.97rem}

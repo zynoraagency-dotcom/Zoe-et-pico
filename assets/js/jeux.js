@@ -120,15 +120,15 @@
     suivant();
   }
 
-  /* ---------- dessins à colorier (fichiers /coloriages/svg/*.svg, aussi utilisés pour l'impression) ---------- */
+  /* ---------- les coloriages de Zoé et Pico (/coloriages/zoe-et-pico/, aussi utilisés pour l'impression) ---------- */
   const DESSINS = [
-    { slug: "sapin", nom: "Le sapin de Noël" }, { slug: "bonhomme-de-neige", nom: "Le bonhomme de neige" },
-    { slug: "jardin", nom: "Le jardin" }, { slug: "papillon", nom: "Le papillon" },
-    { slug: "arc-en-ciel", nom: "L'arc-en-ciel" }, { slug: "poisson", nom: "Le poisson" }
+    { slug: "zoe-et-pico-noel", nom: "Zoé et Pico décorent le sapin", image: true },
+    { slug: "zoe-et-pico-bonhomme-de-neige", nom: "Zoé et Pico et le bonhomme de neige", image: true },
+    { slug: "zoe-et-pico-plage", nom: "Zoé et Pico à la plage", image: true },
+    { slug: "zoe-et-pico-jardin", nom: "Zoé arrose les fleurs avec Pico", image: true },
+    { slug: "zoe-et-pico-lecture", nom: "Zoé et Pico lisent un livre", image: true }
   ];
   let dessinActuel = 0;
-  const cacheSvg = new Map();
-  const chargerSvg = slug => cacheSvg.get(slug) || cacheSvg.set(slug, fetch(`/coloriages/svg/${slug}.svg`).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })).get(slug);
   const COULEURS = [["rouge", "#ef233c"], ["orange", "#ff8a00"], ["jaune", "#ffd000"], ["vert", "#22c55e"], ["vert d'eau", "#57d6a4"], ["bleu ciel", "#6cc8ff"],
     ["bleu", "#1e6bff"], ["violet", "#8b3dff"], ["rose", "#ff6fb5"], ["rose pâle", "#ffc4dc"], ["marron", "#8b5a2b"], ["beige", "#f3d9a4"], ["gris", "#a8a29e"], ["noir", "#3b2a1a"], ["blanc", "#ffffff"]];
 
@@ -250,7 +250,7 @@
       const choixD = document.createElement("div"); choixD.className = "vignettes-dessins"; choixD.setAttribute("role", "group"); choixD.setAttribute("aria-label", "Choisis un dessin");
       DESSINS.forEach((x, i) => {
         const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", x.nom); b.setAttribute("aria-pressed", i === dessinActuel ? "true" : "false");
-        b.innerHTML = `<img src="/coloriages/svg/${x.slug}.svg" alt="" width="64" height="64">`;
+        b.innerHTML = `<img src="/coloriages/zoe-et-pico/${x.slug}-vignette.webp" alt="" width="64" height="90">`;
         b.addEventListener("click", () => { if (i !== dessinActuel) { dessinActuel = i; ouvrir("coloriage", true); } });
         choixD.appendChild(b);
       });
@@ -280,13 +280,22 @@
 
       const historique = [], colorie = new Set();
       const maj = () => { annuler.disabled = !historique.length; fini.disabled = colorie.size < 3; };
-      annuler.addEventListener("click", () => { const h = historique.pop(); if (h) { h.z.setAttribute("fill", h.avant); if (h.nouveau) colorie.delete(h.z); son("clic"); } maj(); });
+      annuler.addEventListener("click", () => { const h = historique.pop(); if (h) { h.defaire(); if (h.nouveau) colorie.delete(h.cle); son("clic"); } maj(); });
+      let pourImprimer = () => null;
+      const etincellesA = (x, y) => {
+        if (ZP.calme) return;
+        for (let k = 0; k < 7; k++) {
+          const s = document.createElement("i"); s.className = "etinc";
+          s.style.cssText = `left:${x}px;top:${y}px;--t:${8 + Math.random() * 10}px;--dx:${(Math.random() - .5) * 70}px;--dy:${(Math.random() - .5) * 70}px`;
+          ZP.couche().appendChild(s); setTimeout(() => s.remove(), 950);
+        }
+      };
       imprimer.addEventListener("click", () => {
-        const svgEl = toile.querySelector("svg"); if (!svgEl) return;
+        const copie = pourImprimer(); if (!copie) return;
         let zone = document.getElementById("impression");
         if (!zone) { zone = document.createElement("div"); zone.id = "impression"; document.body.appendChild(zone); }
         zone.innerHTML = `<div class="feuille"><p class="feuille-titre">Mon coloriage avec Zoé et Pico</p></div>`;
-        zone.firstChild.appendChild(svgEl.cloneNode(true));
+        zone.firstChild.appendChild(copie);
         zone.firstChild.insertAdjacentHTML("beforeend", `<p class="feuille-pied">zoeetpico.fr · jeux, coloriages et cahiers d'activités</p>`);
         document.body.classList.add("imprime");
         const fin_ = () => { document.body.classList.remove("imprime"); removeEventListener("afterprint", fin_); };
@@ -294,31 +303,87 @@
       });
       fini.addEventListener("click", () => { if (!at.dataset.fini) { at.dataset.fini = 1; dessinActuel = (dessinActuel + 1) % DESSINS.length; victoire("Bravo ! Quel joli dessin !"); } });
 
-      chargerSvg(d.slug).then(texte => {
-        if (!at.isConnected) return;
-        toile.innerHTML = texte; toile.removeAttribute("aria-busy");
-        const svgEl = toile.querySelector("svg"); svgEl.removeAttribute("width"); svgEl.removeAttribute("height");
-        const zones = toile.querySelectorAll("[data-z]");
-        zones.forEach((z, i) => {
-          z.setAttribute("tabindex", "0"); z.setAttribute("role", "button"); z.setAttribute("aria-label", "Zone " + (i + 1));
-          const peindre = e => {
-            const avant = z.getAttribute("fill"); if (avant === courant) return;
-            historique.push({ z, avant, nouveau: !colorie.has(z) }); colorie.add(z);
-            z.setAttribute("fill", courant); son("ding"); maj();
-            if (!ZP.calme) {
-              const r = z.getBoundingClientRect(), x = e && e.clientX ? e.clientX : r.left + r.width / 2, y = e && e.clientY ? e.clientY : r.top + r.height / 2;
-              for (let k = 0; k < 7; k++) {
-                const s = document.createElement("i"); s.className = "etinc";
-                s.style.cssText = `left:${x}px;top:${y}px;--t:${8 + Math.random() * 10}px;--dx:${(Math.random() - .5) * 70}px;--dy:${(Math.random() - .5) * 70}px`;
-                ZP.couche().appendChild(s); setTimeout(() => s.remove(), 950);
-              }
+      {
+        const img = new Image(); img.alt = ""; img.className = "traits"; img.src = `/coloriages/zoe-et-pico/${d.slug}.png`;
+        img.decode().then(() => {
+          if (!at.isConnected) return;
+          const W = img.naturalWidth, H = img.naturalHeight, N = W * H;
+          toile.classList.add("raster"); toile.style.aspectRatio = `${W} / ${H}`;
+          const cv = document.createElement("canvas"); cv.width = W; cv.height = H; cv.className = "couleurs";
+          cv.setAttribute("role", "img"); cv.setAttribute("aria-label", "Dessin à colorier : " + d.nom);
+          const ctx = cv.getContext("2d");
+          const off = document.createElement("canvas"); off.width = W; off.height = H;
+          const octx = off.getContext("2d", { willReadFrequently: true }); octx.drawImage(img, 0, 0);
+          const px = octx.getImageData(0, 0, W, H).data;
+          /* zones : pixels clairs reliés entre eux, séparés par les traits */
+          const lum = new Uint8Array(N); for (let i = 0; i < N; i++) lum[i] = px[i * 4];
+          const lab = new Int32Array(N).fill(-1), pile = new Int32Array(N); let nb = 0;
+          for (let i = 0; i < N; i++) {
+            if (lum[i] < 190 || lab[i] >= 0) continue;
+            let sp = 0; pile[sp++] = i; lab[i] = nb;
+            while (sp) {
+              const q = pile[--sp], x = q % W;
+              if (x > 0 && lab[q - 1] < 0 && lum[q - 1] >= 190) { lab[q - 1] = nb; pile[sp++] = q - 1; }
+              if (x < W - 1 && lab[q + 1] < 0 && lum[q + 1] >= 190) { lab[q + 1] = nb; pile[sp++] = q + 1; }
+              if (q >= W && lab[q - W] < 0 && lum[q - W] >= 190) { lab[q - W] = nb; pile[sp++] = q - W; }
+              if (q < N - W && lab[q + W] < 0 && lum[q + W] >= 190) { lab[q + W] = nb; pile[sp++] = q + W; }
             }
-            if (colorie.size === zones.length && !at.dataset.fini) { at.dataset.fini = 1; dessinActuel = (dessinActuel + 1) % DESSINS.length; victoire("Bravo ! Tu as tout colorié !"); }
+            nb++;
+          }
+          /* les bords gris des traits prennent la couleur de la zone voisine (pas de liseré blanc) */
+          const zoneDe = new Int32Array(lab);
+          for (let passe = 0; passe < 2; passe++) {
+            const avant = new Int32Array(zoneDe);
+            for (let i = 0; i < N; i++) {
+              if (avant[i] >= 0 || lum[i] < 60) continue;
+              const x = i % W;
+              const v = (x > 0 && avant[i - 1] >= 0) ? avant[i - 1] : (x < W - 1 && avant[i + 1] >= 0) ? avant[i + 1] : (i >= W && avant[i - W] >= 0) ? avant[i - W] : (i < N - W && avant[i + W] >= 0) ? avant[i + W] : -1;
+              if (v >= 0) zoneDe[i] = v;
+            }
+          }
+          /* liste des pixels et cadre de chaque zone */
+          const debut = new Int32Array(nb + 1), boite = new Int32Array(nb * 4);
+          for (let z = 0; z < nb; z++) { boite[z * 4] = W; boite[z * 4 + 1] = H; boite[z * 4 + 2] = -1; boite[z * 4 + 3] = -1; }
+          for (let i = 0; i < N; i++) { const z = zoneDe[i]; if (z < 0) continue; debut[z + 1]++;
+            const x = i % W, y = (i - x) / W, b = z * 4;
+            if (x < boite[b]) boite[b] = x; if (y < boite[b + 1]) boite[b + 1] = y; if (x > boite[b + 2]) boite[b + 2] = x; if (y > boite[b + 3]) boite[b + 3] = y; }
+          for (let z = 0; z < nb; z++) debut[z + 1] += debut[z];
+          const pos = debut.slice(0, nb), pixels = new Int32Array(debut[nb]);
+          for (let i = 0; i < N; i++) { const z = zoneDe[i]; if (z >= 0) pixels[pos[z]++] = i; }
+          const donnees = ctx.createImageData(W, H); donnees.data.fill(255);
+          ctx.putImageData(donnees, 0, 0);
+          const couleurDe = new Map();
+          const hex = c => [1, 3, 5].map(k => parseInt(c.slice(k, k + 2), 16));
+          const peindreZone = (z, c) => {
+            const [r, g, b] = hex(c), dd = donnees.data;
+            for (let k = debut[z]; k < debut[z + 1]; k++) { const o = pixels[k] * 4; dd[o] = r; dd[o + 1] = g; dd[o + 2] = b; }
+            const bx = boite[z * 4], by = boite[z * 4 + 1];
+            ctx.putImageData(donnees, 0, 0, bx, by, boite[z * 4 + 2] - bx + 1, boite[z * 4 + 3] - by + 1);
           };
-          z.addEventListener("click", peindre);
-          z.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); peindre(); } });
-        });
-      }).catch(() => { toile.innerHTML = '<p class="erreur-chargement">Oups, le dessin ne s\'est pas chargé. Vérifie la connexion puis réessaie.</p>'; });
+          const zoneSous = (x, y) => {
+            for (let rayon = 0; rayon <= 10; rayon += 2)
+              for (let dy = -rayon; dy <= rayon; dy += 2) for (let dx = -rayon; dx <= rayon; dx += 2) {
+                const xx = x + dx, yy = y + dy; if (xx < 0 || yy < 0 || xx >= W || yy >= H) continue;
+                const z = lab[yy * W + xx]; if (z >= 0) return z;
+              }
+            return -1;
+          };
+          cv.addEventListener("click", e => {
+            const r = cv.getBoundingClientRect();
+            const z = zoneSous(Math.floor((e.clientX - r.left) * W / r.width), Math.floor((e.clientY - r.top) * H / r.height));
+            if (z < 0) return;
+            const avant = couleurDe.get(z) || "#ffffff"; if (avant === courant) return;
+            historique.push({ defaire: () => { peindreZone(z, avant); couleurDe.set(z, avant); }, cle: z, nouveau: !colorie.has(z) });
+            colorie.add(z); couleurDe.set(z, courant); peindreZone(z, courant); son("ding"); maj(); etincellesA(e.clientX, e.clientY);
+          });
+          pourImprimer = () => {
+            const c = document.createElement("canvas"); c.width = W; c.height = H; const k = c.getContext("2d");
+            k.drawImage(cv, 0, 0); k.globalCompositeOperation = "multiply"; k.drawImage(img, 0, 0);
+            const im = new Image(); im.src = c.toDataURL("image/png"); im.alt = "Mon coloriage"; im.className = "feuille-dessin"; return im;
+          };
+          toile.replaceChildren(cv, img); toile.removeAttribute("aria-busy");
+        }).catch(() => { toile.innerHTML = '<p class="erreur-chargement">Oups, le dessin ne s\'est pas chargé. Vérifie la connexion puis réessaie.</p>'; });
+      }
     }}
   };
 
