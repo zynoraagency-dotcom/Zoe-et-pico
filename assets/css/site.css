@@ -437,3 +437,10 @@ dialog{border:0;padding:0;color:inherit}
   .lucioles{display:none}
   @view-transition{navigation:none}
 }
+
+/* vidéo sans capture : Zoé et Pico sur un fond doré (en attendant une vraie vignette) */
+.video-sans-image{background:radial-gradient(120% 80% at 50% 25%,#fff8d0 0,#ffe27a 45%,#ffb3cf 100%)}
+.video-illus{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:30%}
+.video-illus img{position:static!important;width:auto!important;height:auto!important;object-fit:contain!important}
+.video-illus img:first-child{height:62%!important;max-height:62%}
+.video-illus img:last-child{height:34%!important;max-height:34%;align-self:flex-start;margin-top:22%;margin-left:-8%;filter:drop-shadow(0 0 16px rgba(255,226,122,.9));animation:flotte 4s ease-in-out infinite}
