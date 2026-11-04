@@ -54,13 +54,13 @@
     plusTard(() => { son("fin"); confettis(); parle(msg); fin.classList.add("vue"); $("rejouer").focus(); }, 600);
   }
 
-  function ouvrir(nom, sansHistorique) {
+  function ouvrir(nom, sansHistorique, param) {
     if (!JEUX[nom]) return;
     nettoyer(); jeuActuel = nom;
     $("salle-titre").textContent = JEUX[nom].titre;
     if (!salle.open) { salle.showModal(); document.body.style.overflow = "hidden"; }
     if (!sansHistorique) history.pushState({ jeu: nom }, "", "#jeu-" + nom);
-    son("clic"); JEUX[nom].lancer();
+    son("clic"); JEUX[nom].lancer(param);
   }
   function fermer(depuisHistorique) {
     if (!salle.open) return;
@@ -68,10 +68,11 @@
     nettoyer(); salle.close(); document.body.style.overflow = ""; jeuActuel = null;
   }
   ZP.ouvrirJeu = ouvrir;
+  const LIEN_JEU = /^#jeu-([a-z]+)(?:-([a-z-]+))?$/;
   addEventListener("popstate", e => {
     if (e.state && e.state.jeu) return ouvrir(e.state.jeu, true);
-    const m = location.hash.match(/^#jeu-(\w+)$/);
-    if (m && JEUX[m[1]]) { history.replaceState(null, "", location.pathname + location.search); ouvrir(m[1]); }
+    const m = location.hash.match(LIEN_JEU);
+    if (m && JEUX[m[1]]) { history.replaceState(null, "", location.pathname + location.search); ouvrir(m[1], false, m[2]); }
     else fermer(true);
   });
   salle.addEventListener("cancel", e => { e.preventDefault(); fermer(); });
@@ -86,7 +87,7 @@
   $("repeter").addEventListener("click", () => ZP.derniereParole && parle(ZP.derniereParole));
   document.addEventListener("click", e => {
     const b = e.target.closest("[data-jeu]");
-    if (b) { e.preventDefault(); ouvrir(b.dataset.jeu); }
+    if (b) { e.preventDefault(); ouvrir(b.dataset.jeu, false, b.dataset.dessin); }
   });
 
   /* ---------- quiz générique ---------- */
@@ -119,52 +120,16 @@
     suivant();
   }
 
-  /* ---------- dessins à colorier ---------- */
-  const T = 'stroke="#3b2a1a" stroke-width="5" stroke-linejoin="round" fill="#fff" data-z';
+  /* ---------- dessins à colorier (fichiers /coloriages/svg/*.svg, aussi utilisés pour l'impression) ---------- */
   const DESSINS = [
-    { nom: "Le jardin", ico: "🌼", svg: `
-      <rect ${T} x="4" y="4" width="392" height="392" rx="22"/>
-      <path ${T} d="M4 300 Q120 250 220 290 T396 270 V374 Q396 396 374 396 H26 Q4 396 4 374Z"/>
-      <circle ${T} cx="335" cy="70" r="38"/>
-      <path ${T} d="M70 90 Q70 60 100 62 Q112 40 140 48 Q165 40 172 66 Q198 70 192 92 Z"/>
-      <path ${T} d="M125 300 Q120 230 130 190"/>
-      <path ${T} d="M128 260 Q90 240 80 210 Q115 212 128 248Z"/>
-      <path ${T} d="M130 235 Q165 215 178 190 Q142 192 130 226Z"/>
-      <circle ${T} cx="130" cy="120" r="30"/><circle ${T} cx="168" cy="150" r="30"/><circle ${T} cx="152" cy="196" r="30"/>
-      <circle ${T} cx="108" cy="196" r="30"/><circle ${T} cx="92" cy="150" r="30"/>
-      <circle ${T} cx="130" cy="160" r="26"/>
-      <path ${T} d="M240 300 V200 L290 160 L340 200 V300Z"/>
-      <path ${T} d="M228 206 L290 150 L352 206 L340 214 L290 172 L240 214Z"/>
-      <rect ${T} x="276" y="248" width="30" height="52" rx="4"/>
-      <rect ${T} x="252" y="214" width="24" height="24" rx="3"/><rect ${T} x="306" y="214" width="24" height="24" rx="3"/>
-      <ellipse ${T} cx="66" cy="340" rx="16" ry="12"/><ellipse ${T} cx="200" cy="355" rx="18" ry="12"/><ellipse ${T} cx="330" cy="345" rx="16" ry="11"/>` },
-    { nom: "Le papillon", ico: "🦋", svg: `
-      <rect ${T} x="4" y="4" width="392" height="392" rx="22"/>
-      <path ${T} d="M4 340 Q200 300 396 340 V374 Q396 396 374 396 H26 Q4 396 4 374Z"/>
-      <path ${T} d="M196 190 C150 90 60 60 50 130 C42 185 120 210 196 205Z"/>
-      <path ${T} d="M204 190 C250 90 340 60 350 130 C358 185 280 210 204 205Z"/>
-      <path ${T} d="M196 212 C140 215 80 260 110 305 C140 340 185 285 196 228Z"/>
-      <path ${T} d="M204 212 C260 215 320 260 290 305 C260 340 215 285 204 228Z"/>
-      <circle ${T} cx="112" cy="140" r="20"/><circle ${T} cx="288" cy="140" r="20"/>
-      <circle ${T} cx="132" cy="282" r="15"/><circle ${T} cx="268" cy="282" r="15"/>
-      <ellipse ${T} cx="200" cy="215" rx="14" ry="70"/>
-      <circle ${T} cx="200" cy="135" r="20"/>
-      <path d="M193 118 Q182 86 162 78 M207 118 Q218 86 238 78" stroke="#3b2a1a" stroke-width="5" fill="none" stroke-linecap="round"/>` },
-    { nom: "L'arc-en-ciel", ico: "🌈", svg: `
-      <rect ${T} x="4" y="4" width="392" height="392" rx="22"/>
-      <path ${T} d="M4 318 H396 V374 Q396 396 374 396 H26 Q4 396 4 374Z"/>
-      <circle ${T} cx="340" cy="62" r="32"/>
-      <path ${T} d="M30 300 A170 170 0 0 1 370 300 L345 300 A145 145 0 0 0 55 300Z"/>
-      <path ${T} d="M55 300 A145 145 0 0 1 345 300 L320 300 A120 120 0 0 0 80 300Z"/>
-      <path ${T} d="M80 300 A120 120 0 0 1 320 300 L295 300 A95 95 0 0 0 105 300Z"/>
-      <path ${T} d="M105 300 A95 95 0 0 1 295 300 L270 300 A70 70 0 0 0 130 300Z"/>
-      <path ${T} d="M130 300 A70 70 0 0 1 270 300Z"/>
-      <path ${T} d="M16 318 Q12 284 46 284 Q56 258 84 268 Q112 258 118 288 Q142 292 136 318Z"/>
-      <path ${T} d="M384 318 Q388 284 354 284 Q344 258 316 268 Q288 258 282 288 Q258 292 264 318Z"/>` }
+    { slug: "jardin", nom: "Le jardin" }, { slug: "papillon", nom: "Le papillon" },
+    { slug: "arc-en-ciel", nom: "L'arc-en-ciel" }, { slug: "poisson", nom: "Le poisson" }
   ];
   let dessinActuel = 0;
+  const cacheSvg = new Map();
+  const chargerSvg = slug => cacheSvg.get(slug) || cacheSvg.set(slug, fetch(`/coloriages/svg/${slug}.svg`).then(r => { if (!r.ok) throw new Error(r.status); return r.text(); })).get(slug);
   const COULEURS = [["rouge", "#ef233c"], ["orange", "#ff8a00"], ["jaune", "#ffd000"], ["vert", "#22c55e"], ["vert d'eau", "#57d6a4"], ["bleu ciel", "#6cc8ff"],
-    ["bleu", "#1e6bff"], ["violet", "#8b3dff"], ["rose", "#ff6fb5"], ["marron", "#8b5a2b"], ["noir", "#3b2a1a"], ["blanc", "#ffffff"]];
+    ["bleu", "#1e6bff"], ["violet", "#8b3dff"], ["rose", "#ff6fb5"], ["rose pâle", "#ffc4dc"], ["marron", "#8b5a2b"], ["beige", "#f3d9a4"], ["gris", "#a8a29e"], ["noir", "#3b2a1a"], ["blanc", "#ffffff"]];
 
   /* ---------- les jeux ---------- */
   const JEUX = {
@@ -270,46 +235,93 @@
       }});
     }},
 
-    coloriage: { titre: "Coloriage", lancer() {
+    coloriage: { titre: "Coloriage", lancer(param) {
       preparerEtoiles(0);
+      const k = DESSINS.findIndex(d => d.slug === param); if (k >= 0) dessinActuel = k;
       const d = DESSINS[dessinActuel];
       bullePico("Choisis une couleur, puis touche le dessin !");
       parle("Choisis une couleur, puis touche le dessin pour le colorier !");
       const at = document.createElement("div"); at.className = "atelier";
-      at.innerHTML = `<div class="dessin"><svg viewBox="0 0 400 400" role="group" aria-label="Dessin à colorier : ${d.nom}">${d.svg}</svg></div>`;
+      const toile = document.createElement("div"); toile.className = "dessin"; toile.setAttribute("aria-busy", "true");
       const outils = document.createElement("div"); outils.className = "outils";
-      const pal = document.createElement("div"); pal.className = "palette"; pal.setAttribute("role", "group"); pal.setAttribute("aria-label", "Couleurs");
-      let courant = COULEURS[0][1];
-      COULEURS.forEach(([nom, c], i) => {
-        const b = document.createElement("button"); b.type = "button"; b.style.background = c; b.setAttribute("aria-label", nom); b.setAttribute("aria-pressed", i ? "false" : "true");
-        b.addEventListener("click", () => { pal.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true"); courant = c; son("clic"); parle(nom, false); });
-        pal.appendChild(b);
-      });
-      const choixD = document.createElement("div"); choixD.className = "dessins-choix";
+
+      /* choix du dessin : de petites vignettes */
+      const choixD = document.createElement("div"); choixD.className = "vignettes-dessins"; choixD.setAttribute("role", "group"); choixD.setAttribute("aria-label", "Choisis un dessin");
       DESSINS.forEach((x, i) => {
-        if (i === dessinActuel) return;
-        const b = document.createElement("button"); b.type = "button"; b.className = "btn btn-blanc btn-petit"; b.textContent = `${x.ico} ${x.nom}`;
-        b.addEventListener("click", () => { dessinActuel = i; ouvrir("coloriage", true); });
+        const b = document.createElement("button"); b.type = "button"; b.setAttribute("aria-label", x.nom); b.setAttribute("aria-pressed", i === dessinActuel ? "true" : "false");
+        b.innerHTML = `<img src="/coloriages/svg/${x.slug}.svg" alt="" width="64" height="64">`;
+        b.addEventListener("click", () => { if (i !== dessinActuel) { dessinActuel = i; ouvrir("coloriage", true); } });
         choixD.appendChild(b);
       });
-      const fini = document.createElement("button"); fini.type = "button"; fini.className = "btn btn-miel"; fini.textContent = "✨ J'ai fini !"; fini.disabled = true; fini.style.opacity = ".5";
-      fini.addEventListener("click", () => { if (!at.dataset.fini) { at.dataset.fini = 1; dessinActuel = (dessinActuel + 1) % DESSINS.length; victoire("Bravo ! Quel joli dessin !"); } });
-      outils.append(pal, fini, choixD); at.appendChild(outils); plateau.appendChild(at);
-      const zones = at.querySelectorAll("[data-z]"); const colorie = new Set();
-      zones.forEach((z, i) => {
-        z.setAttribute("tabindex", "0"); z.setAttribute("role", "button"); z.setAttribute("aria-label", "Zone " + (i + 1));
-        const peindre = () => {
-          z.setAttribute("fill", courant); son("ding"); colorie.add(i);
-          if (colorie.size >= 3) { fini.disabled = false; fini.style.opacity = ""; }
-          if (colorie.size === zones.length && !at.dataset.fini) { at.dataset.fini = 1; dessinActuel = (dessinActuel + 1) % DESSINS.length; victoire("Bravo ! Quel joli dessin !"); }
-        };
-        z.addEventListener("click", peindre);
-        z.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); peindre(); } });
+
+      /* les pots de peinture */
+      const pal = document.createElement("div"); pal.className = "palette"; pal.setAttribute("role", "group"); pal.setAttribute("aria-label", "Couleurs");
+      const nomCouleur = document.createElement("p"); nomCouleur.className = "couleur-choisie"; nomCouleur.setAttribute("aria-live", "polite");
+      let courant = COULEURS[0][1];
+      const choisir = (b, nom, c) => {
+        pal.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", "false")); b.setAttribute("aria-pressed", "true");
+        courant = c; nomCouleur.innerHTML = `<span style="background:${c}"></span>${nom}`;
+      };
+      COULEURS.forEach(([nom, c], i) => {
+        const b = document.createElement("button"); b.type = "button"; b.style.setProperty("--c", c); b.setAttribute("aria-label", nom);
+        b.addEventListener("click", () => { choisir(b, nom, c); son("clic"); parle(nom, false); });
+        pal.appendChild(b); if (!i) choisir(b, nom, c);
       });
+
+      /* les boutons */
+      const actions = document.createElement("div"); actions.className = "actions-coloriage";
+      const btn = (txt, cls, label) => { const b = document.createElement("button"); b.type = "button"; b.className = "btn btn-petit " + cls; b.innerHTML = txt; if (label) b.setAttribute("aria-label", label); actions.appendChild(b); return b; };
+      const annuler = btn("↩️", "btn-blanc", "Annuler"), imprimer = btn("🖨️", "btn-blanc", "Imprimer mon dessin"), fini = btn("✨ J'ai fini !", "btn-miel");
+      annuler.disabled = fini.disabled = true;
+
+      outils.append(nomCouleur, pal, actions, choixD);
+      at.append(toile, outils); plateau.appendChild(at);
+
+      const historique = [], colorie = new Set();
+      const maj = () => { annuler.disabled = !historique.length; fini.disabled = colorie.size < 3; };
+      annuler.addEventListener("click", () => { const h = historique.pop(); if (h) { h.z.setAttribute("fill", h.avant); if (h.nouveau) colorie.delete(h.z); son("clic"); } maj(); });
+      imprimer.addEventListener("click", () => {
+        const svgEl = toile.querySelector("svg"); if (!svgEl) return;
+        let zone = document.getElementById("impression");
+        if (!zone) { zone = document.createElement("div"); zone.id = "impression"; document.body.appendChild(zone); }
+        zone.innerHTML = `<div class="feuille"><p class="feuille-titre">Mon coloriage avec Zoé et Pico</p></div>`;
+        zone.firstChild.appendChild(svgEl.cloneNode(true));
+        zone.firstChild.insertAdjacentHTML("beforeend", `<p class="feuille-pied">zoeetpico.fr · jeux, coloriages et cahiers d'activités</p>`);
+        document.body.classList.add("imprime");
+        const fin_ = () => { document.body.classList.remove("imprime"); removeEventListener("afterprint", fin_); };
+        addEventListener("afterprint", fin_); setTimeout(() => window.print(), 50);
+      });
+      fini.addEventListener("click", () => { if (!at.dataset.fini) { at.dataset.fini = 1; dessinActuel = (dessinActuel + 1) % DESSINS.length; victoire("Bravo ! Quel joli dessin !"); } });
+
+      chargerSvg(d.slug).then(texte => {
+        if (!at.isConnected) return;
+        toile.innerHTML = texte; toile.removeAttribute("aria-busy");
+        const svgEl = toile.querySelector("svg"); svgEl.removeAttribute("width"); svgEl.removeAttribute("height");
+        const zones = toile.querySelectorAll("[data-z]");
+        zones.forEach((z, i) => {
+          z.setAttribute("tabindex", "0"); z.setAttribute("role", "button"); z.setAttribute("aria-label", "Zone " + (i + 1));
+          const peindre = e => {
+            const avant = z.getAttribute("fill"); if (avant === courant) return;
+            historique.push({ z, avant, nouveau: !colorie.has(z) }); colorie.add(z);
+            z.setAttribute("fill", courant); son("ding"); maj();
+            if (!ZP.calme) {
+              const r = z.getBoundingClientRect(), x = e && e.clientX ? e.clientX : r.left + r.width / 2, y = e && e.clientY ? e.clientY : r.top + r.height / 2;
+              for (let k = 0; k < 7; k++) {
+                const s = document.createElement("i"); s.className = "etinc";
+                s.style.cssText = `left:${x}px;top:${y}px;--t:${8 + Math.random() * 10}px;--dx:${(Math.random() - .5) * 70}px;--dy:${(Math.random() - .5) * 70}px`;
+                ZP.couche().appendChild(s); setTimeout(() => s.remove(), 950);
+              }
+            }
+            if (colorie.size === zones.length && !at.dataset.fini) { at.dataset.fini = 1; dessinActuel = (dessinActuel + 1) % DESSINS.length; victoire("Bravo ! Tu as tout colorié !"); }
+          };
+          z.addEventListener("click", peindre);
+          z.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); peindre(); } });
+        });
+      }).catch(() => { toile.innerHTML = '<p class="erreur-chargement">Oups, le dessin ne s\'est pas chargé. Vérifie la connexion puis réessaie.</p>'; });
     }}
   };
 
   /* lien direct vers un jeu : /jeux/#jeu-couleurs */
-  const m = location.hash.match(/^#jeu-(\w+)$/);
-  if (m && JEUX[m[1]]) { history.replaceState(null, "", location.pathname + location.search); ouvrir(m[1]); }
+  const m = location.hash.match(LIEN_JEU);
+  if (m && JEUX[m[1]]) { history.replaceState(null, "", location.pathname + location.search); ouvrir(m[1], false, m[2]); }
 })();
