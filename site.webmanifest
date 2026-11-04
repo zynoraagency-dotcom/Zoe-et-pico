@@ -1,0 +1,16 @@
+{
+  "name": "Zoé et Pico – Jeux pour apprendre en s'amusant",
+  "short_name": "Zoé et Pico",
+  "description": "Jeux éducatifs gratuits, vidéos et cahiers d'activités pour les 3-6 ans.",
+  "lang": "fr",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#eef8df",
+  "theme_color": "#ffc83d",
+  "icons": [
+    { "src": "/img/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/img/icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/img/icone-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
