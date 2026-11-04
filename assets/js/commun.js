@@ -161,3 +161,15 @@ document.querySelectorAll("button.video[data-yt]").forEach(b => {
 
 /* ---------- année du pied de page ---------- */
 document.querySelectorAll("[data-annee]").forEach(e => e.textContent = new Date().getFullYear());
+
+/* ---------- bouton « Imprimer » : n'imprime que la feuille indiquée (data-imprimer="#id") ---------- */
+document.querySelectorAll("[data-imprimer]").forEach(b => b.addEventListener("click", () => {
+  const source = document.querySelector(b.dataset.imprimer); if (!source) return window.print();
+  let zone = document.getElementById("impression");
+  if (!zone) { zone = document.createElement("div"); zone.id = "impression"; document.body.appendChild(zone); }
+  zone.replaceChildren(source.cloneNode(true));
+  document.body.classList.add("imprime");
+  const fin = () => { document.body.classList.remove("imprime"); removeEventListener("afterprint", fin); };
+  addEventListener("afterprint", fin);
+  setTimeout(() => window.print(), 50);
+}));

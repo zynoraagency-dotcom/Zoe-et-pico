@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /outils/
 
 Sitemap: https://zoeetpico.fr/sitemap.xml
