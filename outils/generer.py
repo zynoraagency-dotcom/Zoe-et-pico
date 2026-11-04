@@ -175,7 +175,7 @@ CARTES_JEUX = """
             <circle cx="73" cy="64" r="15" fill="#fff" stroke="#3b2a1a" stroke-width="3"/><circle cx="47" cy="64" r="15" fill="#fff" stroke="#3b2a1a" stroke-width="3"/>
             <circle cx="40" cy="42" r="15" fill="#ff6fb5" stroke="#3b2a1a" stroke-width="3"/><circle cx="60" cy="47" r="13" fill="#ffd000" stroke="#3b2a1a" stroke-width="3"/>
           </svg></div></div>
-          <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Coloriage</h3><p>4 dessins à colorier&nbsp;: le jardin, le papillon, l'arc-en-ciel et le poisson.</p>{a_coloriage}<span class="jouer">Colorier ▶</span></div>
+          <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Coloriage</h3><p>6 dessins à colorier, dont le sapin de Noël et le bonhomme de neige.</p>{a_coloriage}<span class="jouer">Colorier ▶</span></div>
         </a>"""
 APPRENDS = {
     "a_lum": "Compter jusqu'à 10, associer une quantité à un nombre",
@@ -243,6 +243,10 @@ ORGA = {"@context": "https://schema.org", "@graph": [
     {"@type": "Organization", "@id": SITE + "/#marque", "name": "Zoé et Pico", "url": SITE + "/", "logo": SITE + "/img/icone-512.png", "sameAs": [YT]}]}
 
 COLORIAGES = [
+    dict(slug="sapin", nom="le sapin de Noël", titre="Le sapin de Noël", court="Sapin, étoile, boules et cadeaux",
+         desc="Un sapin de Noël décoré de boules et d'étoiles, avec une étoile souriante au sommet et deux cadeaux au pied : le coloriage idéal pour attendre Noël."),
+    dict(slug="bonhomme-de-neige", nom="le bonhomme de neige", titre="Le bonhomme de neige", court="Bonnet, écharpe, flocons et cœurs",
+         desc="Un bonhomme de neige tout sourire avec son bonnet à pompon, son écharpe et son nez en carotte, sous les flocons : un coloriage d'hiver pour les 3-6 ans."),
     dict(slug="jardin", nom="le jardin ensoleillé", titre="Le jardin ensoleillé", court="Soleil, nuage, maison, fleur et champignon",
          desc="Le soleil et le nuage sourient au-dessus de la maison, de la grande fleur et du champignon : un coloriage plein de détails pour les 3-6 ans."),
     dict(slug="papillon", nom="le papillon", titre="Le papillon", court="Grandes ailes, cœurs, fleurs et étoiles",
@@ -261,7 +265,7 @@ def vignette_coloriage(c, details=False):
           <h3>{c['titre']}</h3>
           <p>{c['court']}</p>{btns}
         </article>"""
-VIGNETTES_COLORIAGES = "".join(vignette_coloriage(c) for c in COLORIAGES)
+VIGNETTES_COLORIAGES = "".join(vignette_coloriage(c) for c in COLORIAGES[:4])
 
 # ================================================================ ACCUEIL
 accueil = tete("Zoé et Pico – Jeux éducatifs gratuits, vidéos et cahiers pour les 3-6 ans",
@@ -626,8 +630,8 @@ JEUX_PAGES = [
          comment=["Regarde les lumières qui volent", "Touche une lumière pour l'attraper", "Pico compte avec toi à chaque lumière", "Attrape 10 lumières pour gagner !"],
          conseil="Un jeu parfait pour les plus petits qui découvrent l'écran tactile : il suffit de toucher, sans rien lire."),
     dict(slug="coloriage", h1="Le coloriage en ligne", titre="Coloriage en ligne gratuit pour enfants (3-6 ans) – Zoé et Pico",
-         desc="Coloriage en ligne gratuit pour les 3-6 ans : choisis une couleur et colorie le jardin, le papillon, l'arc-en-ciel ou le poisson. Les dessins sont aussi à imprimer.",
-         intro="Quatre dessins à colorier sur l'écran : le jardin ensoleillé, le papillon, l'arc-en-ciel et le poisson. Pico dit le nom de chaque couleur choisie.",
+         desc="Coloriage en ligne gratuit pour les 3-6 ans : choisis une couleur et colorie le sapin de Noël, le bonhomme de neige, le jardin, le papillon, l'arc-en-ciel ou le poisson. Aussi à imprimer.",
+         intro="Six dessins à colorier sur l'écran : le sapin de Noël, le bonhomme de neige, le jardin ensoleillé, le papillon, l'arc-en-ciel et le poisson. Pico dit le nom de chaque couleur choisie.",
          age="3-6 ans", ico="🖍️", g="#fff6c2",
          apprend=["Nommer 15 couleurs", "Créativité et choix des couleurs", "Précision du geste"],
          comment=["Choisis un pot de peinture", "Touche une partie du dessin pour la colorier", "Le bouton ↩️ annule la dernière couleur", "Touche « J'ai fini ! » ou imprime ton dessin 🖨️"],
@@ -690,8 +694,8 @@ coll_ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": 
            "isAccessibleForFree": True, "hasPart": [{"@type": "ImageObject", "name": f"Coloriage {c['nom']}", "contentUrl": f"{SITE}/coloriages/img/{c['slug']}.png",
            "url": f"{SITE}/coloriages/{c['slug']}/"} for c in COLORIAGES]}
 hub = tete("Coloriages à imprimer gratuits pour enfants (3-6 ans) – Zoé et Pico",
-    "Coloriages gratuits à imprimer pour les enfants de 3 à 6 ans : jardin, papillon, arc-en-ciel, poisson. Format A4 et PDF, ou coloriage en ligne avec Zoé et Pico.",
-    "/coloriages/", ld(coll_ld), image=(f"{SITE}/coloriages/img/papillon.png", 800, 800, "Coloriage du papillon de Zoé et Pico"),
+    "Coloriages gratuits à imprimer pour les enfants de 3 à 6 ans : sapin de Noël, bonhomme de neige, jardin, papillon, arc-en-ciel, poisson. Format A4 et PDF, ou à colorier en ligne.",
+    "/coloriages/", ld(coll_ld), image=(f"{SITE}/coloriages/img/sapin.png", 800, 800, "Coloriage du sapin de Noël de Zoé et Pico"),
     fil=[A, ("Coloriages", "/coloriages/")]) + nav("coloriages") + f"""
 <main id="contenu">
   <div class="page-tete">
@@ -700,7 +704,7 @@ hub = tete("Coloriages à imprimer gratuits pour enfants (3-6 ans) – Zoé et P
         <p class="fil"><a href="/">Accueil</a> › Coloriages</p>
         <h1>Coloriages à imprimer</h1>
         <p>Des coloriages de Zoé et Pico, gratuits, à imprimer en A4 ou à télécharger en PDF. Ils se colorient aussi en ligne, directement sur la tablette&nbsp;!</p>
-        <div class="btns"><a class="btn btn-miel" href="{LIENS_PDF_TOUS}" download>📄 Tous les coloriages (PDF, 4 pages)</a></div>
+        <div class="btns"><a class="btn btn-miel" href="{LIENS_PDF_TOUS}" download>📄 Tous les coloriages (PDF, {len(COLORIAGES)} pages)</a></div>
       </div>
       <img src="/img/pico.webp" alt="" width="360" height="469">
     </div>
@@ -713,7 +717,7 @@ hub = tete("Coloriages à imprimer gratuits pour enfants (3-6 ans) – Zoé et P
       <div class="titre rev"><span class="badge">👨‍👩‍👧 Pour les parents</span><h2 id="t-astuces">Bien imprimer les coloriages</h2></div>
       <div class="parents">
         <div class="atout rev"><span aria-hidden="true">🖨️</span><h3>Imprimer</h3><p>Ouvrez un coloriage et touchez «&nbsp;Imprimer&nbsp;»&nbsp;: seule la feuille A4 s'imprime, sans le reste de la page.</p></div>
-        <div class="atout rev"><span aria-hidden="true">📄</span><h3>Le PDF</h3><p>Pratique sur tablette ou pour imprimer plus tard&nbsp;: chaque coloriage existe en PDF, et les quatre réunis dans un seul fichier.</p></div>
+        <div class="atout rev"><span aria-hidden="true">📄</span><h3>Le PDF</h3><p>Pratique sur tablette ou pour imprimer plus tard&nbsp;: chaque coloriage existe en PDF, et tous réunis dans un seul fichier.</p></div>
         <div class="atout rev"><span aria-hidden="true">🖍️</span><h3>Gros traits</h3><p>Des contours épais et de grandes zones, adaptés aux petites mains de 3 à 6&nbsp;ans.</p></div>
         <div class="atout rev" id="conditions"><span aria-hidden="true">🏫</span><h3>À la maison et en classe</h3><p>Gratuits pour un usage personnel ou en classe. Merci de ne pas les revendre ni les republier ailleurs.</p></div>
       </div>

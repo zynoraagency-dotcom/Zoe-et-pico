@@ -3,7 +3,7 @@
 const http = require('http'), fs = require('fs'), path = require('path');
 const { chromium } = require('playwright');
 const RACINE = path.resolve(process.argv[2] || '.');
-const SLUGS = ['jardin', 'papillon', 'arc-en-ciel', 'poisson'];
+const SLUGS = ['sapin', 'bonhomme-de-neige', 'jardin', 'papillon', 'arc-en-ciel', 'poisson'];
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg', '.woff2': 'font/woff2', '.json': 'application/json' };
 
 const serveur = http.createServer((req, res) => {

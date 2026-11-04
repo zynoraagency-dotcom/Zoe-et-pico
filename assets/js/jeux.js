@@ -122,6 +122,7 @@
 
   /* ---------- dessins à colorier (fichiers /coloriages/svg/*.svg, aussi utilisés pour l'impression) ---------- */
   const DESSINS = [
+    { slug: "sapin", nom: "Le sapin de Noël" }, { slug: "bonhomme-de-neige", nom: "Le bonhomme de neige" },
     { slug: "jardin", nom: "Le jardin" }, { slug: "papillon", nom: "Le papillon" },
     { slug: "arc-en-ciel", nom: "L'arc-en-ciel" }, { slug: "poisson", nom: "Le poisson" }
   ];
