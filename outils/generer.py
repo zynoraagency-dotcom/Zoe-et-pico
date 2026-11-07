@@ -126,6 +126,7 @@ PIED = f"""
 """
 
 def fin(scripts):
+    if "commun" in scripts: scripts = ["voix"] + scripts   # la voix de Pico avant le reste
     s = "".join(f'<script src="/assets/js/{x}.js?v={V(f"assets/js/{x}.js")}" defer></script>\n' for x in scripts)
     return PIED + s + "</body>\n</html>\n"
 
@@ -783,6 +784,14 @@ def page_coloriage(c):
 """ + fin(["commun", "jeux"])
     ecrire(f"coloriages/{c['slug']}/index.html", html)
 for c in COLORIAGES: page_coloriage(c)
+
+# ================================================================ /jeu/ (page écrite à la main) : versions des scripts
+import re as _re
+_jeu = open(os.path.join(SORTIE, "jeu/index.html"), encoding="utf-8").read()
+_jeu = _re.sub(r'<script src="/assets/js/voix\.js\?v=[^"]*" defer></script>\n', "", _jeu)
+_jeu = _re.sub(r'<script src="/jeu/jeu\.js\?v=[^"]*" defer></script>',
+               f'<script src="/assets/js/voix.js?v={V("assets/js/voix.js")}" defer></script>\n<script src="/jeu/jeu.js?v={V("jeu/jeu.js")}" defer></script>', _jeu)
+open(os.path.join(SORTIE, "jeu/index.html"), "w", encoding="utf-8").write(_jeu)
 
 # ================================================================ SITEMAP
 PAGES_SITEMAP.append("/jeu/")

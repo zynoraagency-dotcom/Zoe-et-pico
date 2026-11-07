@@ -60,7 +60,9 @@
     $("salle-titre").textContent = JEUX[nom].titre;
     if (!salle.open) { salle.showModal(); document.body.style.overflow = "hidden"; }
     if (!sansHistorique) history.pushState({ jeu: nom }, "", "#jeu-" + nom);
-    son("clic"); JEUX[nom].lancer(param);
+    son("clic");
+    if (window.ZPVoix) ZPVoix.prechauffer(["un", "deux", "trois", "quatre", "cinq", "six", "sept", "huit", "neuf", "dix", "Bravo !", "Super !", "Génial !", "Bien joué !", "Oui, c'est ça !", "Essaie encore !", "Bravo, tu as gagné !"]);
+    JEUX[nom].lancer(param);
   }
   function fermer(depuisHistorique) {
     if (!salle.open) return;
@@ -202,7 +204,7 @@
         const av = document.createElement("div"); av.className = "objets"; av.setAttribute("role", "img"); av.setAttribute("aria-label", `${n} ${nom}`);
         av.innerHTML = Array.from({ length: n }, (_, i) => `<span style="animation-delay:${i * 60}ms" aria-hidden="true">${emo}</span>`).join("");
         const opts = new Set([n]); while (opts.size < 3) { const o = n + hasard([-2, -1, 1, 2, 3]); if (o >= 1 && o <= 10) opts.add(o); }
-        return { texte: `Combien de ${nom} ?`, avant: av,
+        return { texte: `Combien ${/^[aeéiou]/i.test(nom) ? "d'" : "de "}${nom} ?`, avant: av,
           choix: melange([...opts]).map(o => { const b = document.createElement("button"); b.className = "gros-bouton"; b.textContent = o; b.setAttribute("aria-label", MOTS[o]); return { el: b, bon: o === n }; }) };
       }});
     }},
