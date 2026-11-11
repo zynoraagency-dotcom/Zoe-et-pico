@@ -2,7 +2,10 @@
 # Utilisation (depuis la racine du site) : python3 outils/images_coloriages.py . && python3 outils/generer.py . && node outils/apercus.js .
 import sys, json, os
 SORTIE = sys.argv[1]
-V = "17"
+import hashlib
+def V(fichier):
+    """numéro de version = empreinte du contenu : le navigateur recharge le fichier dès qu'il change"""
+    return hashlib.md5(open(os.path.join(SORTIE, fichier.lstrip("/")), "rb").read()).hexdigest()[:8]
 SITE = "https://zoeetpico.fr"
 YT = "https://www.youtube.com/@zoeetpico"
 YT_ABO = "https://www.youtube.com/@zoeetpico?sub_confirmation=1"
@@ -51,7 +54,7 @@ def tete(titre, desc, chemin, extra="", image=None, fil=None, indexer=True):
 <meta name="twitter:image" content="{img}">
 <link rel="preload" href="/assets/fonts/sniglet-800.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/assets/fonts/andika-400.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/assets/css/site.css?v={V}">
+<link rel="stylesheet" href="/assets/css/site.css?v={V("assets/css/site.css")}">
 {extra}</head>
 """
 
@@ -125,7 +128,8 @@ PIED = f"""
 """
 
 def fin(scripts):
-    s = "".join(f'<script src="/assets/js/{x}.js?v={V}" defer></script>\n' for x in scripts)
+    if "commun" in scripts: scripts = ["voix"] + scripts   # la voix de Pico avant le reste
+    s = "".join(f'<script src="/assets/js/{x}.js?v={V(f"assets/js/{x}.js")}" defer></script>\n' for x in scripts)
     return PIED + s + "</body>\n</html>\n"
 
 def ecrire(chemin, html):
@@ -138,7 +142,7 @@ def ld(obj):
 
 # ---------------------------------------------------------------- blocs réutilisés
 CARTES_JEUX = """
-        <a class="carte-jeu vedette rev" href="/jeu/" style="--g:linear-gradient(135deg,#fff1a8,#ffc83d);--o:#d99a12;--b:#c27c00">
+        <a class="carte-jeu vedette rev" href="/jeu/" style="--g:linear-gradient(135deg,#fff1a8,#ffc83d);--o:#d99a12;--b:#a46800">
           <div class="vignette"><img class="v-pico" src="/img/pico.webp" alt="" width="360" height="469" loading="lazy"><span class="lanternes" aria-hidden="true"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i><i></i><i></i><i></i><i></i></span></div>
           <div class="texte-jeu"><span class="age">⭐ Le jeu de Pico · 3-6 ans</span><h3>Les lumières de Pico</h3><p>Compte les fleurs avec Pico et allume ses 10 lumières&nbsp;!</p>{a_lum}<span class="jouer">Jouer ▶</span></div>
         </a>
@@ -146,7 +150,7 @@ CARTES_JEUX = """
           <div class="vignette"><div class="v-cartes"><span class="mc dos"><img src="/img/pico-petit.webp" alt="" width="160" height="208" loading="lazy"></span><span class="mc">🍓</span><span class="mc">🍓</span></div></div>
           <div class="texte-jeu"><span class="age">4-6 ans</span><h3>Memory</h3><p>Retourne les cartes et trouve les paires.</p>{a_memo}<span class="jouer">Jouer ▶</span></div>
         </a>
-        <a class="carte-jeu rev" href="/jeux/compter/" data-jeu="compter" style="--g:linear-gradient(135deg,#c9f7e2,#6ddcb0);--o:#2e9e74;--b:#1f8a63">
+        <a class="carte-jeu rev" href="/jeux/compter/" data-jeu="compter" style="--g:linear-gradient(135deg,#c9f7e2,#6ddcb0);--o:#2e9e74;--b:#1d815d">
           <div class="vignette"><div class="v-compte" aria-hidden="true"><span class="fruits">🍓🍓🍓</span><span class="chiffre">3</span></div></div>
           <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Combien&nbsp;?</h3><p>Compte les fruits et touche le bon nombre.</p>{a_compter}<span class="jouer">Jouer ▶</span></div>
         </a>
@@ -163,18 +167,12 @@ CARTES_JEUX = """
           </div></div>
           <div class="texte-jeu"><span class="age">3-5 ans</span><h3>Les formes</h3><p>Trouve le cercle, le carré, l'étoile…</p>{a_formes}<span class="jouer">Jouer ▶</span></div>
         </a>
-        <a class="carte-jeu rev" href="/jeux/lucioles/" data-jeu="lucioles" style="--g:linear-gradient(135deg,#ffe0d0,#ff9a74);--o:#d9643f;--b:#c8532a">
+        <a class="carte-jeu rev" href="/jeux/lucioles/" data-jeu="lucioles" style="--g:linear-gradient(135deg,#ffe0d0,#ff9a74);--o:#d9643f;--b:#c25028">
           <div class="vignette"><span class="v-lum" aria-hidden="true"><i style="left:14%;top:20%"></i><i style="left:76%;top:16%;animation-delay:.3s"></i><i style="left:20%;top:62%;animation-delay:.6s"></i><i style="left:80%;top:58%;animation-delay:.2s"></i></span><img class="v-zoe" src="/img/zoe.webp" alt="" width="324" height="690" loading="lazy"></div>
           <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Attrape les lucioles</h3><p>Aide Zoé à attraper 10 lumières qui volent.</p>{a_lucioles}<span class="jouer">Jouer ▶</span></div>
         </a>
-        <a class="carte-jeu rev" href="/jeux/coloriage/" data-jeu="coloriage" style="--g:linear-gradient(135deg,#fff6c2,#c4f0d4);--o:#7fb08f;--b:#2f8f58">
-          <div class="vignette"><div class="v-dessin" aria-hidden="true"><svg viewBox="0 0 120 120">
-            <path d="M58 118 Q56 90 60 70" stroke="#3b2a1a" stroke-width="4" fill="none"/>
-            <path d="M59 100 Q40 92 36 80 Q52 80 59 96Z" fill="#22c55e" stroke="#3b2a1a" stroke-width="3"/>
-            <circle cx="60" cy="26" r="15" fill="#ff6fb5" stroke="#3b2a1a" stroke-width="3"/><circle cx="80" cy="42" r="15" fill="#ff6fb5" stroke="#3b2a1a" stroke-width="3"/>
-            <circle cx="73" cy="64" r="15" fill="#fff" stroke="#3b2a1a" stroke-width="3"/><circle cx="47" cy="64" r="15" fill="#fff" stroke="#3b2a1a" stroke-width="3"/>
-            <circle cx="40" cy="42" r="15" fill="#ff6fb5" stroke="#3b2a1a" stroke-width="3"/><circle cx="60" cy="47" r="13" fill="#ffd000" stroke="#3b2a1a" stroke-width="3"/>
-          </svg></div></div>
+        <a class="carte-jeu rev" href="/jeux/coloriage/" data-jeu="coloriage" style="--g:linear-gradient(135deg,#fff6c2,#c4f0d4);--o:#7fb08f;--b:#29814f">
+          <div class="vignette"><img class="v-coloriage" src="/coloriages/zoe-et-pico/zoe-et-pico-noel-vignette.webp" alt="" width="400" height="565" loading="lazy"></div>
           <div class="texte-jeu"><span class="age">3-6 ans</span><h3>Coloriage</h3><p>Colorie Zoé et Pico à Noël, dans la neige, à la plage et au jardin.</p>{a_coloriage}<span class="jouer">Colorier ▶</span></div>
         </a>"""
 APPRENDS = {
@@ -803,6 +801,14 @@ def page_coloriage(c):
 """ + fin(["commun", "jeux"])
     ecrire(f"coloriages/{c['slug']}/index.html", html)
 for c in COLORIAGES: page_coloriage(c)
+
+# ================================================================ /jeu/ (page écrite à la main) : versions des scripts
+import re as _re
+_jeu = open(os.path.join(SORTIE, "jeu/index.html"), encoding="utf-8").read()
+_jeu = _re.sub(r'<script src="/assets/js/voix\.js\?v=[^"]*" defer></script>\n', "", _jeu)
+_jeu = _re.sub(r'<script src="/jeu/jeu\.js\?v=[^"]*" defer></script>',
+               f'<script src="/assets/js/voix.js?v={V("assets/js/voix.js")}" defer></script>\n<script src="/jeu/jeu.js?v={V("jeu/jeu.js")}" defer></script>', _jeu)
+open(os.path.join(SORTIE, "jeu/index.html"), "w", encoding="utf-8").write(_jeu)
 
 # ================================================================ SITEMAP
 PAGES_SITEMAP.append("/jeu/")

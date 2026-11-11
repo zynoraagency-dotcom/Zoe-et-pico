@@ -44,6 +44,11 @@
   }
   try { chercheVoix(); speechSynthesis.onvoiceschanged = chercheVoix; } catch (e) {}
   function dire(texte) {
+    /* la vraie voix de Pico en priorité, la voix du navigateur en secours */
+    if (window.ZPVoix && ZPVoix.dire(texte, () => synthese(texte))) { try { speechSynthesis.cancel(); } catch (e) {} return; }
+    synthese(texte);
+  }
+  function synthese(texte) {
     try {
       speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(texte);
@@ -108,7 +113,8 @@
       reponses.appendChild(b);
     });
     const nom = NOMS[sorte][1];
-    parle(`Combien de ${nom} ? Touche-les pour compter !`, `Combien de ${nom} ?`);
+    const de = /^[aeéiou]/i.test(nom) ? "d'" : "de ";
+    parle(`Combien ${de}${nom} ? Touche-les pour compter !`, `Combien ${de}${nom} ?`);
     sauve();
   }
 
@@ -138,7 +144,7 @@
       pico.classList.remove("saute"); void pico.offsetWidth; pico.classList.add("saute");
       const bravo = ["Bravo !", "Super !", "Génial !", "Youpi !", "Trop fort !"][hasard(0, 4)];
       const nom = NOMS[manche.sorte][manche.n > 1 ? 1 : 0];
-      parle(`${bravo} Il y a ${manche.n} ${nom} !`, `${bravo} ${MOTS[manche.n]} ${nom} !`);
+      parle(`${bravo} Il y a ${manche.n} ${nom} !`, bravo);
       sauve();
       setTimeout(() => etat.tour >= TOURS ? finir() : nouvelleManche(), 2200);
     } else {

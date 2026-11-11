@@ -14,7 +14,7 @@
   color-scheme:light;
   --carte:#fffdf6; --encre:#3b2a1a; --doux:#5f4a2e; --rose:#ff5c9a; --rose-f:#c33a72; --rose-texte:#b8306a;
   --miel:#ffc83d; --miel-f:#d99a12; --lueur:#ffe27a; --prairie:#eef8df; --prairie-f:#dcefc6;
-  --menthe:#57d6a4; --ciel:#6cc8ff; --lavande:#b49cff; --corail:#ff8a65; --yt:#ff0033;
+  --menthe:#57d6a4; --ciel:#6cc8ff; --lavande:#b49cff; --corail:#ff8a65; --yt:#e7002d;
   --display:"Sniglet","Comic Sans MS",system-ui,sans-serif;
   --body:"Andika","Trebuchet MS",system-ui,sans-serif;
   --ombre:0 8px 0 rgba(59,42,26,.12), 0 18px 34px rgba(59,42,26,.10);
@@ -52,7 +52,7 @@ img{height:auto}
 .btn:hover{transform:translateY(-2px)}
 .btn-miel{background:linear-gradient(135deg,#ffd85c,var(--miel));color:var(--encre);box-shadow:0 7px 0 var(--miel-f)}
 .btn-miel:active{transform:translateY(5px);box-shadow:0 2px 0 var(--miel-f)}
-.btn-rose{background:var(--rose-f);background:linear-gradient(135deg,#ff6fa8,#e0457f);color:#fff;box-shadow:0 7px 0 #a82c5e}
+.btn-rose{background:var(--rose-f);background:linear-gradient(135deg,#d13a74,#b8306a);color:#fff;box-shadow:0 7px 0 #8a2350}
 .btn-rose:active{transform:translateY(5px);box-shadow:0 2px 0 #a82c5e}
 .btn-blanc{background:var(--carte);color:var(--encre);box-shadow:0 7px 0 rgba(59,42,26,.18)}
 .btn-blanc:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(59,42,26,.18)}
@@ -229,6 +229,7 @@ section{padding:46px 0 60px;scroll-margin-top:90px}
 .v-zoe{height:180px;width:auto;align-self:flex-end;margin-bottom:-6px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.2))}
 .v-lum{position:absolute!important;inset:0;transform:none!important}
 .v-lum i{position:absolute;width:26px;height:26px;border-radius:50%;background:radial-gradient(circle,#fffbe0,var(--lueur) 40%,rgba(255,179,0,.8) 60%,rgba(255,200,61,0) 72%);box-shadow:0 0 18px 8px rgba(255,226,122,.6);animation:scintille 1s ease-in-out infinite alternate}
+.v-coloriage{height:88%;width:auto;background:#fff;border-radius:12px;padding:4px;box-shadow:0 6px 0 rgba(59,42,26,.15);transform:rotate(-3deg)}
 .v-dessin{width:150px;height:150px;background:#fff;border-radius:20px;padding:8px;box-shadow:0 6px 0 rgba(59,42,26,.15)}
 @media (max-width:900px){.jeux{grid-template-columns:1fr 1fr}}
 @media (max-width:600px){

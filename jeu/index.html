@@ -136,10 +136,10 @@ body {
 .sous { font-size: 1.15rem; margin: 0; max-width: 32ch; }
 .gros {
   font-family: var(--display); font-weight: 800; font-size: 1.6rem;
-  background: var(--rose); color: #fff; border: 0; border-radius: 999px; padding: 14px 40px; cursor: pointer;
-  box-shadow: 0 7px 0 #c9417a;
+  background: #b84e78; color: #fff; border: 0; border-radius: 999px; padding: 14px 40px; cursor: pointer;
+  box-shadow: 0 7px 0 #8a3558;
 }
-.gros:active { transform: translateY(5px); box-shadow: 0 2px 0 #c9417a; }
+.gros:active { transform: translateY(5px); box-shadow: 0 2px 0 #8a3558; }
 .gros:focus-visible { outline: 4px solid var(--encre); outline-offset: 4px; }
 .duo { display: flex; align-items: flex-end; justify-content: center; gap: 4px; }
 .duo .z { height: min(34vh, 260px); }
@@ -180,7 +180,7 @@ body {
       <img class="pico" id="pico" src="/img/pico.webp" width="360" height="469" alt="Pico la luciole">
       <div class="bulle" id="bulle" aria-live="polite">Bzzz ! Compte avec moi !</div>
     </div>
-    <div class="champ" id="champ" aria-label="Le jardin"></div>
+    <div class="champ" id="champ" role="group" aria-label="Le jardin"></div>
     <div class="reponses" id="reponses"></div>
 
     <section class="ecran" id="debut">
@@ -202,6 +202,7 @@ body {
   </div>
 </div>
 
-<script src="/jeu/jeu.js?v=15" defer></script>
+<script src="/assets/js/voix.js?v=b01be414" defer></script>
+<script src="/jeu/jeu.js?v=5d1ebf41" defer></script>
 </body>
 </html>

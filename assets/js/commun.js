@@ -56,8 +56,8 @@ const chargerVoix = () => {
 };
 if ("speechSynthesis" in window) { chargerVoix(); speechSynthesis.onvoiceschanged = chargerVoix; }
 ZP.derniereParole = "";
-ZP.parle = (t, garder = true) => {
-  if (garder) ZP.derniereParole = t;
+/* la vraie voix de Pico (enregistrements) en priorité, la voix du navigateur en secours */
+const synthese = t => {
   if (!("speechSynthesis" in window)) return;
   try {
     speechSynthesis.cancel();
@@ -66,7 +66,12 @@ ZP.parle = (t, garder = true) => {
     speechSynthesis.speak(u);
   } catch (e) {}
 };
-ZP.tais = () => { try { speechSynthesis.cancel(); } catch (e) {} };
+ZP.parle = (t, garder = true) => {
+  if (garder) ZP.derniereParole = t;
+  if (window.ZPVoix && ZPVoix.dire(t, () => synthese(t))) { try { speechSynthesis.cancel(); } catch (e) {} return; }
+  synthese(t);
+};
+ZP.tais = () => { if (window.ZPVoix) ZPVoix.arreter(); try { speechSynthesis.cancel(); } catch (e) {} };
 let ac;
 ZP.son = type => {
   try {
