@@ -2,13 +2,15 @@
 # Utilisation (depuis la racine du site) : python3 outils/images_coloriages.py . && python3 outils/generer.py . && node outils/apercus.js .
 import sys, json, os
 SORTIE = sys.argv[1]
-V = "16"
+V = "17"
 SITE = "https://zoeetpico.fr"
 YT = "https://www.youtube.com/@zoeetpico"
 YT_ABO = "https://www.youtube.com/@zoeetpico?sub_confirmation=1"
 AMZ_MS = "https://www.amazon.fr/dp/B0HPYPGQWM"  # ASIN du livre broché (bibliothèque KDP)
 AMZ_GS = "https://www.amazon.fr/dp/B0HPYWGW65"
-MAJ = "4 novembre 2026"
+AMZ_PS = "https://amzn.eu/d/09rgUIRF"
+AMZ_NOEL = "https://amzn.eu/d/0fiF1F0B"
+MAJ = "11 novembre 2026"
 PAGES_SITEMAP = []
 A = ("Accueil", "/")
 ICONE_YT = '<svg class="icone-yt" viewBox="0 0 28 20" aria-hidden="true"><rect width="28" height="20" rx="6" fill="currentColor" opacity=".25"/><path d="M11 5.5v9l8-4.5z" fill="currentColor"/></svg>'
@@ -191,14 +193,35 @@ def cartes(details):
 VIDEO_PICO = f"""<button class="video" type="button" data-yt="57Ozwm16M1A" data-titre="Coucou ! Voici Zoé et Pico" aria-label="Regarder la vidéo : Coucou ! Voici Zoé et Pico">
             <img src="/img/video-message-de-pico.webp" alt="" width="540" height="960" loading="lazy"><span class="etiquette">Coucou ! Voici Zoé et Pico</span><span class="play" aria-hidden="true"></span>
           </button>"""
-VIDEO_2 = f"""<button class="video video-sans-image" type="button" data-yt="gxy63tFRIhM" data-titre="Brosse-toi les dents avec Zoé et Pico !" aria-label="Regarder la vidéo : Brosse-toi les dents avec Zoé et Pico !">
-            <span class="video-illus" aria-hidden="true"><img src="/img/zoe.webp" alt="" width="324" height="690" loading="lazy"><img src="/img/pico.webp" alt="" width="360" height="469" loading="lazy"></span><span class="etiquette">Brosse-toi les dents&nbsp;! 🪥</span><span class="play" aria-hidden="true"></span>
+def video_illus(yt, titre, etiquette, deco, fond):
+    return f"""<button class="video video-sans-image" type="button" data-yt="{yt}" data-titre="{titre}" aria-label="Regarder la vidéo : {titre}" style="background:{fond}">
+            <span class="video-deco" aria-hidden="true">{deco}</span><span class="video-illus" aria-hidden="true"><img src="/img/zoe.webp" alt="" width="324" height="690" loading="lazy"><img src="/img/pico.webp" alt="" width="360" height="469" loading="lazy"></span><span class="etiquette">{etiquette}</span><span class="play" aria-hidden="true"></span>
           </button>"""
+# Les vidéos, de la plus récente à la plus ancienne. Pour en ajouter une : une ligne de plus en haut de cette liste
+# (identifiant = la fin de l'adresse YouTube du Short).
+VIDEO_FERME = video_illus("TlU1eMaGp_c", "Devine qui fait ce bruit ? Zoé et Pico à la ferme", "Devine qui fait ce bruit&nbsp;? 🐮", "🐮 🐷 🐔 🦆", "radial-gradient(120% 80% at 50% 25%,#f4ffd6 0,#bfe8a0 45%,#ffd27a 100%)")
+VIDEO_COMPTE = video_illus("PbhA-zhDjN4", "Compte jusqu'à 5 avec Zoé et Pico !", "Compte jusqu'à 5&nbsp;! 🌸", "🌸🌸🌸🌸🌸", "radial-gradient(120% 80% at 50% 25%,#fff0f6 0,#ffc2da 45%,#b9e4ff 100%)")
+VIDEO_2 = video_illus("gxy63tFRIhM", "Brosse-toi les dents avec Zoé et Pico !", "Brosse-toi les dents&nbsp;! 🪥", "🪥 ✨", "radial-gradient(120% 80% at 50% 25%,#eefaff 0,#b9e4ff 45%,#c9f7e2 100%)")
+VIDEOS_TOUTES = "\n          ".join([VIDEO_FERME, VIDEO_COMPTE, VIDEO_2, VIDEO_PICO])
 CARTE_CHAINE = f"""<a class="video-chaine" href="{YT}">
             <img src="/img/pico.webp" alt="" width="360" height="469" loading="lazy"><b>Toutes les vidéos de Zoé et Pico</b><span class="btn btn-yt btn-petit">{ICONE_YT} Voir la chaîne</span>
           </a>"""
 
 LIVRES = [
+    dict(cle="noel", titre="Mon cahier de Noël avec Zoé et Pico", niveau="Spécial Noël", age="3-6 ans", img="cahier-noel", w=600, h=776, lien=AMZ_NOEL,
+         complet="Mon cahier de Noël avec Zoé et Pico : activités et coloriages de Noël pour les 3-6 ans",
+         alt="Couverture du cahier de Noël de Zoé et Pico",
+         court="53 pages d'activités de Noël&nbsp;: graphisme, labyrinthes, compter, 9 grands coloriages et une lettre au Père Noël.",
+         long="Un cahier d'activités de Noël pour les 3-6 ans, avec Zoé et Pico&nbsp;: une activité par jour, comme un calendrier de l'Avent. Une idée cadeau pour la chaussette ou la Saint-Nicolas&nbsp;!",
+         programme=["Graphisme pour préparer la main à l'écriture", "Labyrinthes, points à relier, jeu des différences", "Jeux pour apprendre à compter", "9 grands coloriages de Noël", "Une lettre au Père Noël à remplir", "Les solutions et un diplôme de « Petit lutin de Noël »"],
+         puces=["3-6 ans", "Spécial Noël 🎄", "Idée cadeau"]),
+    dict(cle="ps", titre="Mon année de Petite Section avec Zoé et Pico", niveau="Petite Section", age="3-4 ans", img="cahier-petite-section", w=600, h=776, lien=AMZ_PS,
+         complet="Mon année de Petite Section avec Zoé et Pico : graphisme, formes, couleurs, compter – 3-4 ans",
+         alt="Couverture du cahier d'activités Petite Section de Zoé et Pico",
+         court="Traits et ronds, couleurs, formes, grand et petit, compter jusqu'à 5, gommettes et coloriages, au fil des saisons.",
+         long="Un premier cahier d'activités pour la Petite Section de maternelle, avec Zoé et Pico, organisé au fil des 4 saisons. Les pages «&nbsp;Je deviens grand&nbsp;» ont un QR code pour regarder la vidéo de Zoé et Pico avec votre enfant.",
+         programme=["Traits et ronds à repasser", "Les couleurs", "Rond, carré, triangle", "Grand et petit", "Compter jusqu'à 3, puis jusqu'à 5", "Labyrinthes très faciles et gommettes"],
+         puces=["3-4 ans", "Petite Section", "Avec QR codes vidéo"]),
     dict(cle="ms", titre="Mon cahier d'activités avec Zoé et Pico – Moyenne Section", niveau="Moyenne Section", age="4-5 ans", img="cahier-moyenne-section", w=500, h=750, lien=AMZ_MS,
          complet="Mon cahier d'activités avec Zoé et Pico : Moyenne Section 4-5 ans : graphisme, nombres jusqu'à 10, labyrinthes, points à relier, logique et coloriages",
          alt="Zoé et Pico dans le jardin, illustration du cahier Moyenne Section",
@@ -206,7 +229,7 @@ LIVRES = [
          long="Un cahier d'activités pour la Moyenne Section de maternelle, avec Zoé et Pico la petite luciole.",
          programme=["Graphisme", "Nombres jusqu'à 10", "Labyrinthes", "Points à relier", "Logique", "Coloriages"],
          puces=["4-5 ans", "Moyenne Section", "Livre broché"]),
-    dict(cle="gs", titre="Mon cahier d'activités avec Zoé et Pico – Grande Section", niveau="Grande Section", age="5-6 ans", img="cahier-grande-section", w=647, h=844, lien=AMZ_GS,
+    dict(cle="gs", titre="Mon cahier d'activités avec Zoé et Pico – Grande Section", niveau="Grande Section", age="5-6 ans", img="cahier-grande-section", w=600, h=776, lien=AMZ_GS,
          complet="Mon cahier d'activités avec Zoé et Pico : Grande Section 5-6 ans : lettres de A à Z, nombres jusqu'à 20, premières additions, labyrinthes et coloriages magiques – Prêt pour le CP !",
          alt="Couverture du cahier d'activités Grande Section de Zoé et Pico",
          court="Lettres de A à Z, nombres jusqu'à 20, premières additions, labyrinthes et coloriages magiques.",
@@ -231,7 +254,7 @@ CARTE_BIENTOT = """<article class="livre rev">
         </article>"""
 
 PROMO = f"""<div class="promo-bandeau">
-        <a class="promo-carte rev" href="/livres/" style="--g:linear-gradient(135deg,#fff1a8,#ffd27a);--o:#d99a12"><img src="/img/cahier-grande-section.webp" alt="" width="647" height="844" loading="lazy"><span><b>Les cahiers de Zoé et Pico</b><span>Pour continuer à apprendre à la maison, de la Moyenne à la Grande Section.</span></span></a>
+        <a class="promo-carte rev" href="/livres/" style="--g:linear-gradient(135deg,#fff1a8,#ffd27a);--o:#d99a12"><img src="/img/cahier-grande-section.webp" alt="" width="600" height="776" loading="lazy"><span><b>Les cahiers de Zoé et Pico</b><span>Toute la maternelle, de la Petite à la Grande Section, et un cahier spécial Noël&nbsp;🎄</span></span></a>
         <a class="promo-carte rev" href="/videos/" style="--g:linear-gradient(135deg,#ffd3e4,#ffb3cf);--o:#d9578c"><img src="/img/video-message-de-pico.webp" alt="" width="540" height="960" loading="lazy"><span><b>Les vidéos de Zoé et Pico</b><span>De petites vidéos à regarder ensemble, sur la chaîne YouTube.</span></span></a>
       </div>"""
 
@@ -333,14 +356,13 @@ accueil = tete("Zoé et Pico – Jeux éducatifs gratuits, vidéos et cahiers po
     <div class="wrap">
       <div class="videos-zone rev">
         <div class="videos-liste">
-          {VIDEO_2}
-          {VIDEO_PICO}
+          {VIDEOS_TOUTES}
           {CARTE_CHAINE}
         </div>
         <div class="videos-txt">
           <div class="mini"><img src="/img/pico-petit.webp" alt="" width="160" height="208" loading="lazy"><span class="badge">▶️ Les vidéos</span></div>
           <h2 id="t-videos">Les vidéos de Zoé et Pico</h2>
-          <p>Appuie sur une vidéo pour la regarder. D'autres petites vidéos arrivent pour compter, apprendre les couleurs et s'amuser dans le jardin de Zoé&nbsp;!</p>
+          <p>Appuie sur une vidéo pour la regarder. Compter, deviner les cris des animaux, se brosser les dents… et d'autres petites vidéos arrivent bientôt&nbsp;!</p>
           <div class="btns">
             <a class="btn btn-rose" href="/videos/">▶ Toutes les vidéos</a>
             <a class="btn btn-yt" href="{YT_ABO}">{ICONE_YT} S'abonner</a>
@@ -355,9 +377,7 @@ accueil = tete("Zoé et Pico – Jeux éducatifs gratuits, vidéos et cahiers po
     <div class="wrap">
       <div class="titre rev"><span class="badge">📚 Pour continuer à la maison</span><h2 id="t-cahiers">Les cahiers de Zoé et Pico</h2><p>Des cahiers d'activités et de coloriage pour la maternelle, vendus sur Amazon.</p></div>
       <div class="livres">
-        {carte_livre(LIVRES[0])}
-        {carte_livre(LIVRES[1])}
-        {CARTE_BIENTOT}
+        {"".join(carte_livre(l) for l in LIVRES)}
       </div>
       <div class="suite rev"><a class="btn btn-blanc" href="/livres/">📚 Découvrir les cahiers</a></div>
     </div>
@@ -446,8 +466,7 @@ videos = tete("Vidéos éducatives pour enfants – Zoé et Pico",
           <!-- POUR AJOUTER UNE VIDÉO : copier le bloc <button class="video" …> … </button> ci-dessous,
                remplacer 57Ozwm16M1A par l'identifiant de la vidéo (la fin de son adresse YouTube),
                changer le titre (2 fois) et l'image (une capture de la vidéo, placée dans le dossier img). -->
-          {VIDEO_2}
-          {VIDEO_PICO}
+          {VIDEOS_TOUTES}
           {CARTE_CHAINE}
         </div>
         <p class="note">Pour protéger votre vie privée, YouTube n'est contacté que lorsque vous appuyez sur une vidéo (mode «&nbsp;confidentialité renforcée&nbsp;»). <a href="/confidentialite/">En savoir plus</a></p>
@@ -466,14 +485,14 @@ ecrire("videos/index.html", videos)
 def detail_livre(l):
     p = "".join(f'<span class="puce{(" rose", "", " menthe")[i % 3]}">{x}</span>' for i, x in enumerate(l["puces"]))
     return f"""<article class="livre-detail rev" id="{l['cle']}">
-        <span class="couv"><img src="/img/{l['img']}.webp" alt="{l['alt']}" width="{l['w']}" height="{l['h']}"{' loading="lazy"' if l['cle'] != 'ms' else ''}></span>
+        <span class="couv"><img src="/img/{l['img']}.webp" alt="{l['alt']}" width="{l['w']}" height="{l['h']}"{' loading="lazy"' if l is not LIVRES[0] else ''}></span>
         <div>
           <h2>{l['titre']}</h2>
           <div class="puces">{p}</div>
           <p>{l['long']}</p>
           <h3 class="disp" style="font-size:1.15rem;margin-top:6px">Au programme</h3>
           <ul>{"".join(f"<li>{x}</li>" for x in l['programme'])}</ul>
-          <p style="font-size:.98rem">Âge conseillé&nbsp;: {l['age']} · {l['niveau']} de maternelle · Livre broché vendu sur Amazon</p>
+          <p style="font-size:.98rem">Âge conseillé&nbsp;: {l['age']} · {l['niveau']}{'' if l['cle'] == 'noel' else ' de maternelle'} · Livre broché vendu sur Amazon</p>
           <div class="btns"><a class="btn btn-amazon" href="{l['lien']}">🛒 Voir le cahier sur Amazon</a></div>
         </div>
       </article>"""
@@ -482,7 +501,7 @@ livres_ld = {"@context": "https://schema.org", "@graph": [
      "author": {"@type": "Person", "name": "Flora Renard"}, "typicalAgeRange": l["age"].replace(" ans", ""),
      "about": l["programme"], "educationalLevel": l["niveau"]} for l in LIVRES]}
 livres = tete("Cahiers d'activités et de coloriage pour la maternelle – Zoé et Pico",
-    "Les cahiers d'activités de Zoé et Pico pour la Moyenne Section (4-5 ans) et la Grande Section (5-6 ans) : activités et coloriages pour apprendre en s'amusant. Disponibles sur Amazon.",
+    "Les cahiers d'activités de Zoé et Pico pour toute la maternelle (Petite, Moyenne et Grande Section) et un cahier spécial Noël : activités et coloriages pour apprendre en s'amusant. Disponibles sur Amazon.",
     "/livres/", ld(livres_ld), fil=[A, ("Cahiers", "/livres/")]) + nav("livres") + f"""
 <main id="contenu">
   <div class="page-tete">
@@ -498,9 +517,7 @@ livres = tete("Cahiers d'activités et de coloriage pour la maternelle – Zoé 
 
   <section aria-label="Les cahiers" style="padding-top:10px">
     <div class="wrap">
-      {detail_livre(LIVRES[0])}
-      {detail_livre(LIVRES[1])}
-      <div class="livres" style="max-width:420px">{CARTE_BIENTOT}</div>
+      {"".join(detail_livre(l) for l in LIVRES)}
     </div>
   </section>
 
@@ -511,7 +528,7 @@ livres = tete("Cahiers d'activités et de coloriage pour la maternelle – Zoé 
         <h3 class="disp" style="font-size:1.2rem;margin-top:14px">Où acheter les cahiers&nbsp;?</h3>
         <p>Les cahiers sont vendus sur Amazon. Les boutons «&nbsp;Voir sur Amazon&nbsp;» ouvrent la page du cahier après une petite question réservée aux adultes.</p>
         <h3 class="disp" style="font-size:1.2rem;margin-top:14px">Quel cahier choisir&nbsp;?</h3>
-        <p>Le cahier Moyenne Section (4-5 ans) travaille le graphisme, les nombres jusqu'à 10, la logique et l'attention. Le cahier Grande Section (5-6 ans) aborde les lettres de A à Z, les nombres jusqu'à 20 et les premières additions, pour préparer l'entrée au CP.</p>
+        <p>Le cahier Petite Section (3-4 ans) fait découvrir les couleurs, les formes et les premiers nombres. Le cahier Moyenne Section (4-5 ans) travaille le graphisme, les nombres jusqu'à 10, la logique et l'attention. Le cahier Grande Section (5-6 ans) aborde les lettres de A à Z, les nombres jusqu'à 20 et les premières additions, pour préparer l'entrée au CP. Et le cahier de Noël (3-6 ans) accompagne l'attente de Noël, une activité par jour.</p>
         <h3 class="disp" style="font-size:1.2rem;margin-top:14px">Et sur le site&nbsp;?</h3>
         <p>Les <a href="/jeux/">jeux gratuits</a> complètent les cahiers&nbsp;: compter, les couleurs, les formes, la mémoire et le coloriage.</p>
       </div>
@@ -690,12 +707,12 @@ for j in JEUX_PAGES: page_jeu(j)
 # ================================================================ COLORIAGES À IMPRIMER
 LIENS_PDF_TOUS = "/coloriages/pdf/coloriages-zoe-et-pico.pdf"
 PROMO_CAHIERS_COLORIAGE = f"""<div class="livre-detail rev" style="margin-top:10px">
-        <span class="couv"><img src="/img/cahier-grande-section.webp" alt="" width="647" height="844" loading="lazy"></span>
+        <span class="couv"><img src="/img/cahier-noel.webp" alt="" width="600" height="776" loading="lazy"></span>
         <div>
-          <span class="badge">📚 Pour les parents</span>
+          <span class="badge">🎄 Pour les parents</span>
           <h2>Encore plus de coloriages dans les cahiers</h2>
-          <p>Les cahiers d'activités de Zoé et Pico contiennent aussi des coloriages, avec des labyrinthes, des nombres, des lettres et des jeux de logique, pour la Moyenne Section (4-5 ans) et la Grande Section (5-6 ans).</p>
-          <div class="btns"><a class="btn btn-miel" href="/livres/">📚 Découvrir les cahiers</a></div>
+          <p>Le cahier de Noël de Zoé et Pico contient 9 grands coloriages de Noël, avec des labyrinthes, des jeux pour compter et une lettre au Père Noël. Les cahiers d'activités, de la Petite à la Grande Section, ont aussi leurs coloriages.</p>
+          <div class="btns"><a class="btn btn-amazon" href="{AMZ_NOEL}">🛒 Le cahier de Noël sur Amazon</a><a class="btn btn-blanc" href="/livres/">📚 Tous les cahiers</a></div>
         </div>
       </div>"""
 coll_ld = {"@context": "https://schema.org", "@type": "CollectionPage", "name": "Coloriages à imprimer de Zoé et Pico", "url": SITE + "/coloriages/", "inLanguage": "fr",
