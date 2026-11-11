@@ -215,8 +215,8 @@ LIVRES = [
          long="Un cahier d'activités de Noël pour les 3-6 ans, avec Zoé et Pico&nbsp;: une activité par jour, comme un calendrier de l'Avent. Une idée cadeau pour la chaussette ou la Saint-Nicolas&nbsp;!",
          programme=["Graphisme pour préparer la main à l'écriture", "Labyrinthes, points à relier, jeu des différences", "Jeux pour apprendre à compter", "9 grands coloriages de Noël", "Une lettre au Père Noël à remplir", "Les solutions et un diplôme de « Petit lutin de Noël »"],
          puces=["3-6 ans", "Spécial Noël 🎄", "Idée cadeau"]),
-    dict(cle="ps", titre="Mon cahier d'activités avec Zoé et Pico – Petite Section", niveau="Petite Section", age="3-4 ans", img="cahier-petite-section", w=600, h=776, lien=AMZ_PS,
-         complet="Mon cahier d'activités avec Zoé et Pico : Petite Section 3-4 ans",
+    dict(cle="ps", titre="Mon année de Petite Section avec Zoé et Pico", niveau="Petite Section", age="3-4 ans", img="cahier-petite-section", w=600, h=776, lien=AMZ_PS,
+         complet="Mon année de Petite Section avec Zoé et Pico : graphisme, formes, couleurs, compter – 3-4 ans",
          alt="Couverture du cahier d'activités Petite Section de Zoé et Pico",
          court="Traits et ronds, couleurs, formes, grand et petit, compter jusqu'à 5, gommettes et coloriages, au fil des saisons.",
          long="Un premier cahier d'activités pour la Petite Section de maternelle, avec Zoé et Pico, organisé au fil des 4 saisons. Les pages «&nbsp;Je deviens grand&nbsp;» ont un QR code pour regarder la vidéo de Zoé et Pico avec votre enfant.",
@@ -229,7 +229,7 @@ LIVRES = [
          long="Un cahier d'activités pour la Moyenne Section de maternelle, avec Zoé et Pico la petite luciole.",
          programme=["Graphisme", "Nombres jusqu'à 10", "Labyrinthes", "Points à relier", "Logique", "Coloriages"],
          puces=["4-5 ans", "Moyenne Section", "Livre broché"]),
-    dict(cle="gs", titre="Mon cahier d'activités avec Zoé et Pico – Grande Section", niveau="Grande Section", age="5-6 ans", img="cahier-grande-section", w=647, h=844, lien=AMZ_GS,
+    dict(cle="gs", titre="Mon cahier d'activités avec Zoé et Pico – Grande Section", niveau="Grande Section", age="5-6 ans", img="cahier-grande-section", w=600, h=776, lien=AMZ_GS,
          complet="Mon cahier d'activités avec Zoé et Pico : Grande Section 5-6 ans : lettres de A à Z, nombres jusqu'à 20, premières additions, labyrinthes et coloriages magiques – Prêt pour le CP !",
          alt="Couverture du cahier d'activités Grande Section de Zoé et Pico",
          court="Lettres de A à Z, nombres jusqu'à 20, premières additions, labyrinthes et coloriages magiques.",
@@ -254,7 +254,7 @@ CARTE_BIENTOT = """<article class="livre rev">
         </article>"""
 
 PROMO = f"""<div class="promo-bandeau">
-        <a class="promo-carte rev" href="/livres/" style="--g:linear-gradient(135deg,#fff1a8,#ffd27a);--o:#d99a12"><img src="/img/cahier-grande-section.webp" alt="" width="647" height="844" loading="lazy"><span><b>Les cahiers de Zoé et Pico</b><span>Toute la maternelle, de la Petite à la Grande Section, et un cahier spécial Noël&nbsp;🎄</span></span></a>
+        <a class="promo-carte rev" href="/livres/" style="--g:linear-gradient(135deg,#fff1a8,#ffd27a);--o:#d99a12"><img src="/img/cahier-grande-section.webp" alt="" width="600" height="776" loading="lazy"><span><b>Les cahiers de Zoé et Pico</b><span>Toute la maternelle, de la Petite à la Grande Section, et un cahier spécial Noël&nbsp;🎄</span></span></a>
         <a class="promo-carte rev" href="/videos/" style="--g:linear-gradient(135deg,#ffd3e4,#ffb3cf);--o:#d9578c"><img src="/img/video-message-de-pico.webp" alt="" width="540" height="960" loading="lazy"><span><b>Les vidéos de Zoé et Pico</b><span>De petites vidéos à regarder ensemble, sur la chaîne YouTube.</span></span></a>
       </div>"""
 
