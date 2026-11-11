@@ -14,7 +14,7 @@
   color-scheme:light;
   --carte:#fffdf6; --encre:#3b2a1a; --doux:#5f4a2e; --rose:#ff5c9a; --rose-f:#c33a72; --rose-texte:#b8306a;
   --miel:#ffc83d; --miel-f:#d99a12; --lueur:#ffe27a; --prairie:#eef8df; --prairie-f:#dcefc6;
-  --menthe:#57d6a4; --ciel:#6cc8ff; --lavande:#b49cff; --corail:#ff8a65; --yt:#ff0033;
+  --menthe:#57d6a4; --ciel:#6cc8ff; --lavande:#b49cff; --corail:#ff8a65; --yt:#e7002d;
   --display:"Sniglet","Comic Sans MS",system-ui,sans-serif;
   --body:"Andika","Trebuchet MS",system-ui,sans-serif;
   --ombre:0 8px 0 rgba(59,42,26,.12), 0 18px 34px rgba(59,42,26,.10);
@@ -52,7 +52,7 @@ img{height:auto}
 .btn:hover{transform:translateY(-2px)}
 .btn-miel{background:linear-gradient(135deg,#ffd85c,var(--miel));color:var(--encre);box-shadow:0 7px 0 var(--miel-f)}
 .btn-miel:active{transform:translateY(5px);box-shadow:0 2px 0 var(--miel-f)}
-.btn-rose{background:var(--rose-f);background:linear-gradient(135deg,#ff6fa8,#e0457f);color:#fff;box-shadow:0 7px 0 #a82c5e}
+.btn-rose{background:var(--rose-f);background:linear-gradient(135deg,#d13a74,#b8306a);color:#fff;box-shadow:0 7px 0 #8a2350}
 .btn-rose:active{transform:translateY(5px);box-shadow:0 2px 0 #a82c5e}
 .btn-blanc{background:var(--carte);color:var(--encre);box-shadow:0 7px 0 rgba(59,42,26,.18)}
 .btn-blanc:active{transform:translateY(5px);box-shadow:0 2px 0 rgba(59,42,26,.18)}
@@ -271,7 +271,7 @@ section{padding:46px 0 60px;scroll-margin-top:90px}
 .theme h2{font-size:clamp(1.6rem,3.4vw,2.2rem);margin-bottom:18px;display:flex;align-items:center;gap:10px}
 
 /* ---------- cahiers ---------- */
-.livres{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;max-width:1000px;margin:0 auto}
+.livres{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:24px;max-width:1160px;margin:0 auto}
 .livre{display:flex;flex-direction:column;gap:14px;background:var(--carte);border-radius:var(--rayon);padding:22px 22px 26px;box-shadow:var(--ombre);perspective:900px;text-align:center}
 .couv{position:relative;display:block;aspect-ratio:8.5/11;width:min(230px,70%);margin:0 auto 6px;border-radius:4px 12px 12px 4px;overflow:hidden;background:#fff;
   box-shadow:inset 7px 0 0 rgba(0,0,0,.14),inset 9px 0 0 rgba(255,255,255,.3),0 10px 18px rgba(59,42,26,.28);
@@ -542,3 +542,6 @@ dialog{border:0;padding:0;color:inherit}
   .feuille-pied{font-size:10pt;margin-top:5mm;color:#5f4a2e}
   .rev{opacity:1!important;transform:none!important}
 }
+
+/* décor des vignettes vidéo illustrées (emoji du thème en haut) */
+.video-deco{position:absolute;top:17%;left:0;right:0;text-align:center;font-size:clamp(1.3rem,4.5vw,1.9rem);letter-spacing:.08em;font-family:var(--display,sans-serif);color:#3b2a1a;text-shadow:0 2px 0 rgba(255,255,255,.7);pointer-events:none}
